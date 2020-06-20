@@ -4,9 +4,11 @@
 - clone
 - install python 3
 - download vocabularies in rdf or owl format
-- create folder ./vocabularies in root folder with the programm
-- put all versions of each vocabulary into ./vocabularies/{vocabulary_name}
+- create folder ./vocabularies in root folder with the programm 
+- put all versions of each vocabulary into ./vocabularies/{vocabulary_name} (you can find examples here https://drive.google.com/drive/folders/1PriRBtywgzUX9tGJ9QAPcaVPgRZ__Ibx?usp=sharing )
 - name vocabularies by pattern (if it is possible): yyyy-mm-dd
+
+
 
 ## Run ./startApp.py
 
