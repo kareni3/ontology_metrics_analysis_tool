@@ -1,5 +1,5 @@
-scip folders from vocabularies folder: no
-scip folders from metrics folder: no
+scip folders from vocabularies directory (scip downloading XML files): no
+scip folders from metrics directory (scip creating CSV files): no
 list of foldres to skip (Folder name. Each one is on a new line):
 dcterms
 foaf
