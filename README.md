@@ -12,7 +12,7 @@
 
 ## Run ./startApp.py
 
-After running XML and CSV files of the metrics will be created in roor directory with the programm.
+After running XML and CSV files of the metrics will be created in root directory with the program.
 These files are creating from vocabularies in ./vocabularies directory.
 
 ## How to work with scipVocabularies.txt ?
