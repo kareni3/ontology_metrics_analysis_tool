@@ -49,7 +49,7 @@ def run():
                                   'base':'on',
                                   'schema':'on',
                                   'knowledge':'on',
-                                  'class':'on',
+                                 # 'class':'on',
                                   'graph':'on',
                                   'store_aggreement':'on',
                                   })
