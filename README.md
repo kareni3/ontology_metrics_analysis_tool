@@ -7,6 +7,7 @@
 ```sh
 pip install numpy
 pip install requests
+pip install pandas
 ```
 - download vocabularies in rdf or owl format
 - create folder ./vocabularies in root folder with the programm 
