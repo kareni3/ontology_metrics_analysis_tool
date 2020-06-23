@@ -2,6 +2,8 @@ import getCSVs
 import getMetrics
 import os
 
+if not os.path.exists('./excel'):
+    os.mkdir('./excel')
 if not os.path.exists('./csvs'):
     os.mkdir('./csvs')
 if not os.path.exists('./metrics'):
