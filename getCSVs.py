@@ -3,9 +3,13 @@ from xml.etree import ElementTree
 import numpy as np
 import os
 import re
+import pandas as pd
 
 def run():
     path = './metrics'
+    pathForExcel = r"./excel/union.xlsx"
+    sheets = []
+    sheetNames = []
     
     toScip = False
     scipFolders = []
@@ -52,7 +56,7 @@ def run():
                         continue
                     if toWriteFirstColumn:
                         metrics[0].append(tags2.tag)
-                    metrics[mIndex+1].append(tags2.text)
+                    metrics[mIndex+1].append(convert(tags2.text))
                    
             toWriteFirstColumn = False
         npMetrics = np.array(metrics)
@@ -65,3 +69,21 @@ def run():
                 line += npMetrics[i][j] + ','
             f.write(line+'\n')
         f.close()
+        
+        sheets.append(pd.DataFrame(data=npMetrics[1:,1:], index=npMetrics[1:,0], columns=npMetrics[0,1:]))
+        sheetNames.append(dir)
+        
+    writer = pd.ExcelWriter(pathForExcel, engine = 'xlsxwriter')
+    for i, sheet in  enumerate(sheets):
+        sheet.to_excel(writer, sheet_name = sheetNames[i])
+    writer.save()
+    writer.close()
+
+def convert(string):
+    if string.isdigit():
+       return int(string)
+    else:
+        try:
+            return float(string)
+        except ValueError:
+            return string
