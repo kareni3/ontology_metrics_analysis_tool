@@ -38,7 +38,7 @@ def run():
             if not isfile(path+'/'+dir+'/'+vocabuary):
                 continue
             print(path+'/'+dir+'/'+vocabuary+' - in process', end="\r")
-            f = open(path+'/'+dir+'/'+vocabuary, "r")
+            f = open(path+'/'+dir+'/'+vocabuary, "r", encoding='utf-8')
             text = f.read()
             
             try:
