@@ -28,4 +28,5 @@ If you want to scip vocabularies, just add their folder name into ./scipVocabula
 If you assign the value "yes" to the variable "scip folders from vocabularies directory (scip downloading XML files)" then 1st Rule will work for downloading XML files
 ### 3rd Rule:
 If you assign the value "yes" to the variable "scip folders from metrics directory (scip creating CSV files)" then 1st Rule will work for creating CSV files
-
+### 4th Rule:
+You can add "all" instead of list of vocabularies to scip all of them
