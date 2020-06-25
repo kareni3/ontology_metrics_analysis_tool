@@ -20,9 +20,13 @@ def run():
             toScip = re.search('yes', line[line.find(":") : ])
             f.readline()
             line = f.readline().rstrip('\n')
-            while line:
-                scipFolders.append(line)
-                line = f.readline().rstrip('\n')
+            if line == 'all':
+                for dir in os.listdir(path):
+                    scipFolders.append(dir)
+            else:
+                while line:
+                    scipFolders.append(line)
+                    line = f.readline().rstrip('\n')
     except:
         print ("WARN: scipVocabularies.txt was broken. None of vocabularies will be scipped")
         
