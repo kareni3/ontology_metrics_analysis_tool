@@ -38,6 +38,7 @@ def run():
     dLexpressivitySheets = []
     numericSheets = []
     reversedNumericSheets = []
+    classSheets = []
     sheetNames = []
     
     toScip = False
@@ -70,8 +71,8 @@ def run():
         except OSError:
             print ("Directory has not been created")
     
-        npMetrics = fillMetrics(dir)
-        npReversedMetrics = fillMetrics(dir, True)
+        npMetrics, npClassMetrics = fillMetrics(dir, countClassMetrics=True)
+        npReversedMetrics, itsNone = fillMetrics(dir, reversed=True)
        
         writeCSV(dir,npMetrics)
         
@@ -83,19 +84,25 @@ def run():
         dLexpressivitySheets.append(pd.DataFrame(data=dLexpressivityMetrics[1:,1:], index=dLexpressivityMetrics[1:,0], columns=dLexpressivityMetrics[0,1:]))
         numericSheets.append(pd.DataFrame(data=numericMetrics[1:,1:], index=numericMetrics[1:,0], columns=numericMetrics[0,1:],dtype='float'))
         reversedNumericSheets.append(pd.DataFrame(data=reversedNumericMetrics[1:,1:], index=reversedNumericMetrics[1:,0], columns=reversedNumericMetrics[0,1:],dtype='float'))
+        classSheets.append(pd.DataFrame(data=npClassMetrics[1:,1:], index=npClassMetrics[1:,0], columns=npClassMetrics[0,1:]))
 
         sheetNames.append(dir)
     print("Please stand by...")
-    writeAllExcels(["directOrder", "reverseOrder", "directOrder"],
-                   ["numericalMetrics", "numericalMetrics", "DLexpressivity"],
-                   [numericSheets, reversedNumericSheets, dLexpressivitySheets],
+    writeAllExcels(["directOrder", "reverseOrder", "directOrder", "directOrder"],
+                   ["numericalMetrics", "numericalMetrics", "DLexpressivity", "classMetrics"],
+                   [numericSheets, reversedNumericSheets, dLexpressivitySheets, classSheets],
                    sheetNames)
 
 
-def fillMetrics(dir,reversed=False):
+def fillMetrics(dir,reversed=False,countClassMetrics=False):
     metrics = []
-    toWriteFirstColumn = True
+    classMetrics = []
+    classes = []
+    classAttrNumber = 0
     vocabularyNames = os.listdir(path+'/'+dir)
+    versionsNumber = len(vocabularyNames)
+    # for metrics
+    toWriteFirstColumn = True
     for i in range(len(vocabularyNames)):
         mIndex = len(vocabularyNames) - i - 1 if reversed else i
         print(path+'/'+dir+'/'+vocabularyNames[mIndex])
@@ -106,19 +113,48 @@ def fillMetrics(dir,reversed=False):
             metrics.append([])
             metrics[0].append('version name')
         metrics[i+1].append(vocabularyNames[mIndex][ : vocabularyNames[mIndex].find(".")])
-        
+
         for tags1 in ontology:
             for tags2 in tags1:
-                # all metrics except class metrics
                 if type(tags2.tag) != str or type(tags2.text) != str:
+                    if tags2.tag == "class" and countClassMetrics:
+                        if tags2.attrib['name'] not in classes:
+                            classes.append(tags2.attrib['name'])
+                        if classAttrNumber == 0:
+                            classAttrNumber = len(tags2)
                     continue
                 if toWriteFirstColumn:
                     metrics[0].append(tags2.tag)
                 metrics[i+1].append(convert(tags2.text))
                
         toWriteFirstColumn = False
+    if countClassMetrics:
+        # for classes
+        classMetrics = [['NULL' for x in range(classAttrNumber*len(classes)+3+len(classes))] for x in range(versionsNumber + 1)]
+        classMetrics[0][0] = 'version name'
+        toWriteFirstColumn = True
+        for i in range(len(vocabularyNames)):
+            mIndex = len(vocabularyNames) - i - 1 if reversed else i
+            tree = ElementTree.parse(path+'/'+dir+'/'+vocabularyNames[mIndex])
+            ontology = tree.getroot().find('ontology')
+            classMetrics[i+1][0] = vocabularyNames[mIndex][ : vocabularyNames[mIndex].find(".")]
+            for tags1 in ontology:
+                for m, tags2 in enumerate(tags1):
+                    if type(tags2.tag) != str or type(tags2.text) != str:
+                        if tags2.tag == "class" and countClassMetrics:
+                            classListNumber = classes.index(tags2.attrib['name'])
+                            classMetrics[0][classListNumber*len(tags2) + 1 + classListNumber] = "NAME: " + tags2.attrib['name']
+                            classMetrics[i+1][classListNumber*len(tags2) + 1 + classListNumber] = ""
+                            for k, tags3 in enumerate(tags2):
+                                if toWriteFirstColumn:
+                                    classMetrics[0][classListNumber*len(tags2) + k + 2 + classListNumber] = tags3.tag
+                                classMetrics[i+1][classListNumber*len(tags2) + k + 2 + classListNumber] = tags3.text
+                        continue
+                   
+            toWriteFirstColumn = False
     npMetrics = np.array(metrics)
-    return expandHeader(npMetrics.transpose(), reversed)
+    npClassMetrics = np.array(classMetrics)
+    return (expandHeader(npMetrics.transpose(), reversed), (npClassMetrics.transpose() if countClassMetrics else None))
 
 def writeCSV(dir,npMetrics):
     f = open('./csvs/'+dir+'/'+dir+'.csv', 'tw', encoding='utf-8')

@@ -46,31 +46,19 @@ def run():
             f = open(path+'/'+dir+'/'+vocabuary, "r")
             text = f.read()
             
-            #try:
-            r = requests.post('https://ontometrics.informatik.uni-rostock.de/ontologymetrics/ServletController', 
-                              data = {
-                                  'text':text,
-                                  'path':'C:\fakepath\dublin_core_terms.rdf',
-                                  'base':'on',
-                                  'schema':'on',
-                                  'knowledge':'on',
-                                  'class':'on',
-                                  'graph':'on',
-                                  'store_aggreement':'on',
-                                  },
-                              headers={
-                                  'classmetrics': 'true'
-                                  })
-            #except:
-            #    print(path+'/'+dir+'/'+vocabuary+' - it seems ontoMetrics does not work. Try later.')
-            #    continue
+            r = postRequest(text, 'on')
             linkToXML = ''
             m = re.search('https://ontometrics.informatik.uni-rostock.de/tmp/(.+?).xml', r.text)
             if m:
                 linkToXML = m.group(0)
             else:
-                print(path+'/'+dir+'/'+vocabuary+' - ontoMetrics did not generate XML file. Put this vocabulary into broken folder.')
-                continue
+                r = postRequest(text, None)
+                m = re.search('https://ontometrics.informatik.uni-rostock.de/tmp/(.+?).xml', r.text)
+                if m:
+                    linkToXML = m.group(0)
+                else:
+                    print(path+'/'+dir+'/'+vocabuary+' - ontoMetrics did not generate XML file. Put this vocabulary into broken folder.')
+                    continue
     
             # print(linkToXML)
             try: 
@@ -86,3 +74,15 @@ def run():
     
             print(path+'/'+dir+'/'+vocabuary+' - metrics successfully received')
     
+def postRequest(text, rClass):
+    return requests.post('https://ontometrics.informatik.uni-rostock.de/ontologymetrics/ServletController', 
+                              data = {
+                                  'text':text,
+                                  'path':'C:\fakepath\dublin_core_terms.rdf',
+                                  'base':'on',
+                                  'schema':'on',
+                                  'knowledge':'on',
+                                  'class':rClass,
+                                  'graph':'on',
+                                  'store_aggreement':'on',
+                                  })
