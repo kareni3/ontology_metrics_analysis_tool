@@ -4,10 +4,17 @@ import os
 
 if not os.path.exists('./excel'):
     os.mkdir('./excel')
+if not os.path.exists('./excel/directOrder'):
+    os.mkdir('./excel/directOrder')
+if not os.path.exists('./excel/reverseOrder'):
+    os.mkdir('./excel/reverseOrder')
+
 if not os.path.exists('./csvs'):
     os.mkdir('./csvs')
+
 if not os.path.exists('./metrics'):
     os.mkdir('./metrics')
+
 if not os.path.exists('./vocabularies'):
     os.mkdir('./vocabularies')
 
