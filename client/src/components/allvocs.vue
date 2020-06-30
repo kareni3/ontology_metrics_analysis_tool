@@ -1,19 +1,19 @@
 <template>
   <div class="chart">
-    <div v-if="false">
+    <div>
       <span class="asdds">{{namee}}</span>
-      <Line
+      <Linee
         v-if="datacollection"
         :chart-data="datacollection"
         :styles="myStyles"
         :options="options"
-      ></Line>
+      ></Linee>
     </div>
   </div>
 </template>
 
 <script>
-import Line from "./Line.js";
+import Linee from "./Line.js";
 
 export default {
   name: "Chart2",
@@ -21,9 +21,16 @@ export default {
     return {
       datacollection: null,
       options: {
-        maintainAspectRatio: false
+        maintainAspectRatio: false,
+        scales: {
+          xAxes: [
+            {
+              type: "linear",
+              position: "bottom"
+            }
+          ]
+        }
       },
-      namee: "namee",
       colors: [
         "#f8" + "79" + "79",
         "#f8" + "39" + "79",
@@ -51,48 +58,51 @@ export default {
     };
   },
   components: {
-    Line
+    Linee
   },
   computed: {
     myStyles() {
       return {
-        height: `1200px`,
+        height: `300px`,
         position: "relative"
       };
-    },
-    dataset() {
-      let dataset = [];
-      Object.entries(this.radar).forEach((el, i) => {
-        dataset.push({
-          label: el[0],
-          data: el[1].class_names_lisclass_metrics_listt.filter(() => {
-            return true;
+    }
+  },
+  watch: {
+    radar() {
+      this.asd();
+    }
+  },
+  props: ["radar", "namee"],
+  mounted() {
+    this.asd();
+  },
+  methods: {
+    asd() {
+      let datasets = [];
+      Object.entries(this.radar).forEach((voc, i) => {
+        datasets.push({
+          label: voc[0],
+          data: voc[1].arr.map(el => {
+            return {
+              y:
+                voc[1].borders.max === voc[1].borders.min
+                  ? voc[1].borders.max === 0
+                    ? 0
+                    : 0.5
+                  : (+el.y - voc[1].borders.min) /
+                    (voc[1].borders.max - voc[1].borders.min),
+              x: el.x
+            };
           }),
           backgroundColor: this.colors[i % this.colors.length] + "30",
           borderColor: this.colors[i % this.colors.length]
         });
       });
-      return dataset;
-    }
-  },
-  watch: {
-    dataset() {
       this.datacollection = {
-        labels: this.radar[
-          Object.keys(this.radar)[0]
-        ].class_names_list.filter(() => true),
-        datasets: this.dataset
+        datasets: datasets
       };
     }
-  },
-  props: ["radar"],
-  mounted() {
-    this.datacollection = {
-        labels: this.radar[
-          Object.keys(this.radar)[0]
-        ].class_names_list.filter(() => true),
-        datasets: this.dataset
-      };
   }
 };
 </script>
@@ -113,7 +123,6 @@ a {
   color: #42b983;
 }
 .asdds {
-  color:red;
   font-size: 1.4em;
 }
 </style>

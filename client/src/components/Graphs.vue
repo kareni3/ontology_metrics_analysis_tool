@@ -4,7 +4,10 @@
       <input type="checkbox" name="el" value="el" v-model="checkboxvalueradar" />radar
     </div>
     <div class="aaas qq">
-      <input type="checkbox" name="el" value="el" v-model="checkboxvalueall" />all
+      <input type="checkbox" name="el" value="el" v-model="checkboxvalueallvoca" />all vocabularies on one graph
+    </div>
+    <div class="aaas qq">
+      <input type="checkbox" name="el" value="el" v-model="checkboxvalueall" />all metrics
     </div>
     <div class="dfdf">
       <span class="aaas" v-for="(el,i) in list1" :key="el">
@@ -12,9 +15,9 @@
         {{el}}
       </span>
     </div>
-    <div v-if="checkboxvalueradar">
+    <div v-if="checkboxvalueradar || checkboxvalueallvoca">
       <div class="aaas qq fdf">
-        <input type="checkbox" name="el" value="el" v-model="voc_checkboxvalueall" />all
+        <input type="checkbox" name="el" value="el" v-model="voc_checkboxvalueall" />all vocabularies
       </div>
       <div class="dfdf">
         <span class="aaas" v-for="(el,i) in voc_list1" :key="el">
@@ -27,21 +30,23 @@
     <div v-if="checkboxvalueradar">
       <radars v-if="Object.keys(newradar).length" :list="arr12" :radar="newradar" />
     </div>
-    <div v-if="true">
-      <allvocs v-if="Object.keys(allvocs).length" :radar="allvocs" />
+    <div v-if="checkboxvalueallvoca">
+      <allvocs v-for="(el) in arr14" :key="el[0]" :radar="el[1]" :namee="el[0]" />
     </div>
-    <span
-      @click="changeversion_id(index,v)"
-      class="aaa"
-      v-for="(v,index) in arr1"
-      :key="index"
-    >| {{v}} |</span>
-    <graphs
-      v-if="vocabularies_op"
-      :list="arr12"
-      :vocabulary_name="voc_name"
-      :metrics="vocabularies_op[voc_name].metrics"
-    />
+    <div v-else>
+      <span
+        @click="changeversion_id(index,v)"
+        class="aaa"
+        v-for="(v,index) in arr1"
+        :key="index"
+      >| {{v}} |</span>
+      <graphs
+        v-if="vocabularies_op"
+        :list="arr12"
+        :vocabulary_name="voc_name"
+        :metrics="vocabularies_op[voc_name].metrics"
+      />
+    </div>
   </div>
 </template>
 
@@ -54,7 +59,7 @@ export default {
   components: {
     graphs,
     radars,
-    allvocs,
+    allvocs
   },
   data() {
     return {
@@ -69,7 +74,8 @@ export default {
       voc_checkboxvalueall: true,
       radar: {},
       allvocs: {},
-      checkboxvalueradar: false
+      checkboxvalueradar: false,
+      checkboxvalueallvoca: false
     };
   },
   watch: {
@@ -93,6 +99,23 @@ export default {
       return this.list1.filter((el, ind) => {
         return this.checkboxvalue[ind];
       });
+    },
+    arr14() {
+      let arr = [];
+      arr = Object.entries(this.newallvocs).filter((el, ind) => {
+        return this.checkboxvalue[ind];
+      });
+      return arr;
+    },
+    newallvocs() {
+      let newobj = {};
+      Object.entries(this.allvocs).forEach(el => {
+        newobj[el[0]] = {};
+        Object.entries(el[1]).forEach((e, ind) => {
+          if (this.voc_checkboxvalue[ind]) newobj[el[0]][e[0]] = e[1];
+        });
+      });
+      return newobj;
     },
     newradar() {
       let newradar = {};
@@ -192,22 +215,56 @@ export default {
       },
       {}
     );
-    
+
     this.allvocs = {};
-    Object.keys(this.vocabularies_op[Object.keys(this.vocabularies_op)[0]].metrics).forEach(metric1 => {
-          this.allvocs[metric1] = {}
+    Object.keys(
+      this.vocabularies_op[Object.keys(this.vocabularies_op)[0]].metrics
+    ).forEach(metric1 => {
+      this.allvocs[metric1] = {};
     });
     Object.keys(this.vocabularies_op).forEach(metric => {
-        Object.keys(this.allvocs).forEach(metric1 => {
-          this.allvocs[metric1][metric] = {}
-    })
-    })
+      Object.keys(this.allvocs).forEach(metric1 => {
+        this.allvocs[metric1][metric] = {
+          arr: [],
+          borders: { min: Infinity, max: -Infinity }
+        };
+      });
+    });
 
     Object.entries(this.vocabularies_op).forEach(voc => {
       Object.entries(voc[1].metrics).forEach(metric => {
-        this.allvocs[metric[0]][voc[0]] = metric[1]
-      })
-    })
+        Object.values(metric[1].class_names_list).forEach((el, i) => {
+          this.allvocs[metric[0]][voc[0]].arr.push({
+            x:
+              metric[1].class_names_list.length === 1
+                ? 0
+                : i / (metric[1].class_names_list.length - 1),
+            y: metric[1].class_names_lisclass_metrics_listt[i]
+          });
+          if (metric[1].class_names_list.length === 1) {
+            this.allvocs[metric[0]][voc[0]].arr.push({
+              x:
+                metric[1].class_names_list.length === 1
+                  ? 1
+                  : i / (metric[1].class_names_list.length - 1),
+              y: metric[1].class_names_lisclass_metrics_listt[i]
+            });
+          }
+          if (
+            +metric[1].class_names_lisclass_metrics_listt[i] <
+            this.allvocs[metric[0]][voc[0]].borders.min
+          )
+            this.allvocs[metric[0]][voc[0]].borders.min = +metric[1]
+              .class_names_lisclass_metrics_listt[i];
+          if (
+            +metric[1].class_names_lisclass_metrics_listt[i] >
+            this.allvocs[metric[0]][voc[0]].borders.max
+          )
+            this.allvocs[metric[0]][voc[0]].borders.max = +metric[1]
+              .class_names_lisclass_metrics_listt[i];
+        });
+      });
+    });
   }
 };
 </script>
