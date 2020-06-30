@@ -1,16 +1,26 @@
 <template>
   <div class="charts">
-    <div class="aaas qq">
-    <input type="checkbox" name="el" value="el" v-model="checkboxvalueall">all
+    <div>
+      <div class="aaas qq">
+        <input type="checkbox" name="el" value="el" v-model="voc_checkboxvalueall" />all
+      </div>
+      <div class="dfdf">
+        <span class="aaas" v-for="(el,i) in voc_list1" :key="el">
+          <input type="checkbox" :name="el" :value="el" v-model="voc_checkboxvalue[i]" />
+          {{el}}
+        </span>
+      </div>
+    </div>
+    <div class="aaas qq fdf">
+      <input type="checkbox" name="el" value="el" v-model="checkboxvalueall" />all
     </div>
     <div class="dfdf">
-    <span class="aaas" v-for="(el,i) in list1" :key="el">
-      <input type="checkbox" :name="el" :value="el" v-model="checkboxvalue[i]" />
-      {{el}}
-    </span>
+      <span class="aaas" v-for="(el,i) in list1" :key="el">
+        <input type="checkbox" :name="el" :value="el" v-model="checkboxvalue[i]" />
+        {{el}}
+      </span>
     </div>
-    <graphs v-if="vocabularies_op"
-      :list="arr12" :version_name="'all'" :metrics="vocabularies_op" />
+    <graphs v-if="arr13 && time" :list="arr12" :version_name="'all'" :metrics="arr13" />
   </div>
 </template>
 
@@ -19,33 +29,90 @@ import graphs from "./charts_class_versions.vue";
 export default {
   name: "Graph1",
   components: {
-    graphs,
+    graphs
   },
   data() {
     return {
       vocabularies_op: null,
       list1: [],
       checkboxvalue: [],
+      time: true,
       checkboxvalueall: true,
+      voc_list1: [],
+      voc_checkboxvalue: [],
+      voc_checkboxvalueall: true,
       radar: {},
       checkboxvalueradar: false,
-      differences: {},
+      differences: {}
     };
   },
-  watch:{
-    checkboxvalueall(r){
-      let arr = []
-      this.list1.forEach((el,i)=>{
-        arr[i]=r
-      })
+  watch: {
+    checkboxvalueall(r) {
+      let arr = [];
+      this.list1.forEach((el, i) => {
+        arr[i] = r;
+      });
       this.checkboxvalue = arr;
+    },
+    voc_checkboxvalueall(r) {
+      let arr = [];
+      this.voc_list1.forEach((el, i) => {
+        arr[i] = r;
+      });
+      this.voc_checkboxvalue = arr;
+    },
+    arr13() {
+      this.time = false;
+      setTimeout(()=>{
+        this.time = true
+      }, 0)
     }
   },
   computed: {
     arr12() {
       return this.list1.filter((el, ind) => {
-        return this.checkboxvalue[ind]
-      })
+        return this.checkboxvalue[ind];
+      });
+    },
+    arr13() {
+      let vocabularies_op = new Object();
+      Object.keys(this.vocabularies[0]).forEach(metric => {
+        if (!["name", "id", "version", "version_name"].includes(metric)) {
+          vocabularies_op[metric] = {
+            class_names_list: [],
+            class_names_lisclass_metrics_listt: []
+          };
+        }
+      });
+      let versions = {};
+      this.vocabularies.forEach(vocabulary => {
+        Object.entries(vocabulary).forEach(metric => {
+          if (!["name", "id", "version", "version_name"].includes(metric[0])) {
+            let index = vocabularies_op[metric[0]].class_names_list.indexOf(
+              vocabulary.name
+            );
+            if (
+              this.voc_checkboxvalue[this.voc_list1.indexOf(vocabulary.name)]
+            ) {
+              if (index === -1) {
+                vocabularies_op[metric[0]].class_names_list.push(
+                  vocabulary.name
+                );
+                vocabularies_op[
+                  metric[0]
+                ].class_names_lisclass_metrics_listt.push(metric[1]);
+                versions[vocabulary.name] = +vocabulary.version;
+              } else if (+vocabulary.version > versions[vocabulary.name]) {
+                versions[vocabulary.name] = +vocabulary.version;
+                vocabularies_op[metric[0]].class_names_lisclass_metrics_listt[
+                  index
+                ] = metric[1];
+              }
+            }
+          }
+        });
+      });
+      return vocabularies_op;
     }
   },
   props: ["vocabularies"],
@@ -67,32 +134,45 @@ export default {
     // };
     this.vocabularies_op = new Object();
     Object.keys(this.vocabularies[0]).forEach(metric => {
-          if (!["name", "id", "version", "version_name"].includes(metric)) {
-            if (!this.list1.includes(metric)) {
-              this.list1.push(metric);
-              this.checkboxvalue.push(true);
-            }
-            this.vocabularies_op[metric] = {
-              class_names_list: [],
-              class_names_lisclass_metrics_listt: []
-            };
-          }
-        });
-    let versions = {}
+      if (!["name", "id", "version", "version_name"].includes(metric)) {
+        if (!this.list1.includes(metric)) {
+          this.list1.push(metric);
+          this.checkboxvalue.push(true);
+        }
+        this.vocabularies_op[metric] = {
+          class_names_list: [],
+          class_names_lisclass_metrics_listt: []
+        };
+      }
+    });
+    let versions = {};
     this.vocabularies.forEach(vocabulary => {
       Object.entries(vocabulary).forEach(metric => {
         if (!["name", "id", "version", "version_name"].includes(metric[0])) {
-          let index = this.vocabularies_op[metric[0]].class_names_list.indexOf(vocabulary.name)
+          let index = this.vocabularies_op[metric[0]].class_names_list.indexOf(
+            vocabulary.name
+          );
           if (index === -1) {
-          this.vocabularies_op[metric[0]].class_names_list.push(vocabulary.name)
-          this.vocabularies_op[metric[0]].class_names_lisclass_metrics_listt.push(metric[1])
-          versions[vocabulary.name] = +vocabulary.version
+            this.vocabularies_op[metric[0]].class_names_list.push(
+              vocabulary.name
+            );
+            this.vocabularies_op[
+              metric[0]
+            ].class_names_lisclass_metrics_listt.push(metric[1]);
+            versions[vocabulary.name] = +vocabulary.version;
           } else if (+vocabulary.version > versions[vocabulary.name]) {
-            versions[vocabulary.name] = +vocabulary.version
-            this.vocabularies_op[metric[0]].class_names_lisclass_metrics_listt[index] = metric[1]
+            versions[vocabulary.name] = +vocabulary.version;
+            this.vocabularies_op[metric[0]].class_names_lisclass_metrics_listt[
+              index
+            ] = metric[1];
+            if (!this.voc_list1.includes(vocabulary.name))
+              this.voc_list1.push(vocabulary.name);
           }
         }
       });
+    });
+    this.voc_list1.forEach(() => {
+      this.voc_checkboxvalue.push(true);
     });
   }
 };
@@ -117,23 +197,27 @@ a {
   cursor: pointer;
 }
 .qq {
-    display: block!important;
-    margin-left: 10%;
-    margin-bottom: 12px;
+  display: block !important;
+  margin-left: 10%;
+  margin-bottom: 12px;
 }
 .aaas {
-    text-align: left;
-    display: inline-block;
-    width: 380px!important;
-    min-width: 300px;
+  text-align: left;
+  display: inline-block;
+  width: 380px !important;
+  min-width: 300px;
 }
 input[type="checkbox"] {
   transform: scale(1.5);
 }
+.fdf {
+  margin-top: 24px;
+}
 .dfdf {
-  height: 200px;
+  max-height: 200px;
   overflow: auto;
   margin-left: 5%;
   margin-right: 5%;
+  text-align: left;
 }
 </style>
