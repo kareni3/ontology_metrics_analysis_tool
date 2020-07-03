@@ -6,6 +6,9 @@
     <div class="aaas qq">
       <input type="checkbox" name="el" value="el" v-model="checkboxvalueallvoca" />all vocabularies on one graph
     </div>
+    <div v-if="checkboxvalueallvoca" class="aaas qq">
+      <input type="checkbox" class="qq1" name="el" value="el" v-model="checkboxvalueallvoca2" /> year
+    </div>
     <div class="aaas qq">
       <input type="checkbox" name="el" value="el" v-model="checkboxvalueall" />all metrics
     </div>
@@ -27,13 +30,19 @@
       </div>
     </div>
     <br />
+    <div v-if="checkboxvalueallvoca && checkboxvalueallvoca2" class="aaas qq rewq">
+      <input type="checkbox" name="el" value="el" v-model="log" /> Logarithmic data
+    </div>
     <div v-if="checkboxvalueradar">
       <radars v-if="Object.keys(newradar).length" :list="arr12" :radar="newradar" />
     </div>
-    <div v-if="checkboxvalueallvoca">
+    <div v-if="checkboxvalueallvoca && !checkboxvalueallvoca2">
       <allvocs v-for="(el) in arr14" :key="el[0]" :radar="el[1]" :namee="el[0]" />
     </div>
-    <div v-else>
+    <div v-else-if="checkboxvalueallvoca && checkboxvalueallvoca2">
+      <allvocs2 :log="log" v-for="(el) in arr142" :key="el[0]" :radar="el[1]" :namee="el[0]" />
+    </div>
+    <div v-else-if="!checkboxvalueallvoca">
       <span
         @click="changeversion_id(index,v)"
         class="aaa"
@@ -54,12 +63,14 @@
 import graphs from "./graphs_vocabulary.vue";
 import radars from "./radars.vue";
 import allvocs from "./allvocs.vue";
+import allvocs2 from "./allvocs2.vue";
 export default {
   name: "Graph1",
   components: {
     graphs,
     radars,
-    allvocs
+    allvocs,
+    allvocs2,
   },
   data() {
     return {
@@ -74,6 +85,9 @@ export default {
       voc_checkboxvalueall: true,
       radar: {},
       allvocs: {},
+      log: false,
+      allvocs2: {},
+      checkboxvalueallvoca2: false,
       checkboxvalueradar: false,
       checkboxvalueallvoca: false
     };
@@ -106,6 +120,23 @@ export default {
         return this.checkboxvalue[ind];
       });
       return arr;
+    },
+    arr142() {
+      let arr = [];
+      arr = Object.entries(this.newallvocs2).filter((el, ind) => {
+        return this.checkboxvalue[ind];
+      });
+      return arr;
+    },
+    newallvocs2() {
+      let newobj = {};
+      Object.entries(this.allvocs2).forEach(el => {
+        newobj[el[0]] = {};
+        Object.entries(el[1]).forEach((e, ind) => {
+          if (this.voc_checkboxvalue[ind]) newobj[el[0]][e[0]] = e[1];
+        });
+      });
+      return newobj;
     },
     newallvocs() {
       let newobj = {};
@@ -265,6 +296,32 @@ export default {
         });
       });
     });
+
+    this.allvocs2 = {};
+    Object.keys(
+      this.vocabularies_op[Object.keys(this.vocabularies_op)[0]].metrics
+    ).forEach(metric1 => {
+      this.allvocs2[metric1] = {};
+    });
+    Object.keys(this.vocabularies_op).forEach(metric => {
+      Object.keys(this.allvocs2).forEach(metric1 => {
+        this.allvocs2[metric1][metric] = {
+          arr: [],
+          borders: { min: Infinity, max: -Infinity }
+        };
+      });
+    });
+
+    Object.entries(this.vocabularies_op).forEach(voc => {
+      Object.entries(voc[1].metrics).forEach(metric => {
+        Object.values(metric[1].class_names_list).forEach((el, i) => {
+          this.allvocs2[metric[0]][voc[0]].arr.push({
+            x: (new Date(metric[1].class_names_list[i])).getTime(),
+            y: metric[1].class_names_lisclass_metrics_listt[i]
+          });
+        });
+      });
+    });
   }
 };
 </script>
@@ -311,5 +368,14 @@ input[type="checkbox"] {
   margin-right: 5%;
 
   text-align: left;
+}
+.qq1 {
+  margin-left: 32px;
+}
+.rewq {
+  text-align: center!important;
+  color: red;
+  margin-left: 32%;
+  font-size: 1.5em;
 }
 </style>
