@@ -1,4 +1,0 @@
-scip folders from vocabularies folder: no
-scip folders from metrics folder: no
-list of foldres to skip (Folder name. Each one is on a new line):
-all

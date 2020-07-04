@@ -4,17 +4,17 @@ var cors = require('cors')
 const app = express()
 const port = 3001
 app.use(express.json());
-// var corsOptions = {
-//   origin: 'http://localhost:8080/',
-//   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-// }
+const fs = require('fs');
+
+let config = JSON.parse(fs.readFileSync('../database.config.json'));
+
 app.use(cors())
 const client = new Client({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'onto_metrics',
-    password: '480798',
-    port: 3000,
+    user: config.user_name,
+    host: config.host,
+    database: config.db_name,
+    password: config.password,
+    port: +config.port,
 });
 
 client.connect();
@@ -26,7 +26,7 @@ app.get('/classes', async (req, res) => {
     if (version_number){
         query = `SELECT cl.* FROM "class" as cl
         left join vocabulary_metrics as voc
-        on voc.id = cl.vocabulary_id
+        on voc.name = cl.vocabulary_name and voc.version = cl.vocabulary_version_number
         where voc.name in (
             SELECT name FROM vocabulary_metrics
             GROUP BY name

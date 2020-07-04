@@ -1,0 +1,9 @@
+collectVocabularies/vocabularies/*
+collectVocabularies/excel/*
+collectVocabularies/csvs/*
+collectVocabularies/metrics/*
+*node_modules/
+*.vs/
+*__pycache__/
+*dist/
+collectVocabularies/*.egg-info/*

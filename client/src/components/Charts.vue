@@ -150,7 +150,7 @@ export default {
 
     this.classes.forEach(cclass => {
       let vocabulary = this.vocabularies.find(
-        voc => voc.id === cclass.vocabulary_id
+        voc => voc.name === cclass.vocabulary_name && voc.version === cclass.vocabulary_version_number
       );
       if (!this.arr1.includes(vocabulary.name)) this.arr1.push(vocabulary.name)
       for (let metric in this.vocabularies_op[vocabulary.name].versions[
