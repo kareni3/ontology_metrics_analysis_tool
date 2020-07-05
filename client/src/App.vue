@@ -76,6 +76,11 @@ export default {
     this.mmm = this.dsa[0];
   },
   mounted() {
+    window.onscroll = () => {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+        this.$store.dispatch("fetchGraphCount", this.$store.state.graphCount + 5)
+      }
+    };
     this.sliderLine = Math.ceil(
       (parseInt(this.$store.state.transparency.line, 16) * 100) / 255
     );

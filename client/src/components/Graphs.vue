@@ -37,10 +37,14 @@
       <radars v-if="Object.keys(newradar).length" :list="arr12" :radar="newradar" />
     </div>
     <div v-if="checkboxvalueallvoca && !checkboxvalueallvoca2">
-      <allvocs v-for="(el) in arr14" :key="el[0]" :radar="el[1]" :namee="el[0]" />
+      <div v-for="(el, ind) in arr14" :key="el[0]">
+        <allvocs v-if="ind < $store.state.graphCount" :radar="el[1]" :namee="el[0]" />
+      </div>
     </div>
     <div v-else-if="checkboxvalueallvoca && checkboxvalueallvoca2">
-      <allvocs2 :log="log" v-for="(el) in arr142" :key="el[0]" :radar="el[1]" :namee="el[0]" />
+      <div v-for="(el, ind) in arr142" :key="el[0]">
+        <allvocs2 v-if="ind < $store.state.graphCount" :radar="el[1]" :log="log" :namee="el[0]" />
+      </div>
     </div>
     <div v-else-if="!checkboxvalueallvoca">
       <span
@@ -70,7 +74,7 @@ export default {
     graphs,
     radars,
     allvocs,
-    allvocs2,
+    allvocs2
   },
   data() {
     return {
@@ -89,10 +93,16 @@ export default {
       allvocs2: {},
       checkboxvalueallvoca2: false,
       checkboxvalueradar: false,
-      checkboxvalueallvoca: false
+      checkboxvalueallvoca: false,
     };
   },
   watch: {
+    checkboxvalueallvoca2() {
+      this.$store.dispatch("fetchGraphCount", 5)
+    },
+    checkboxvalueallvoca() {
+      this.$store.dispatch("fetchGraphCount", 5)
+    },
     checkboxvalueall(r) {
       let arr = [];
       this.list1.forEach((el, i) => {
@@ -165,6 +175,7 @@ export default {
   },
   props: ["vocabularies"],
   mounted() {
+    this.$store.dispatch("fetchGraphCount", 5)
     // let vocabularies = {
     //   vocabulary_name: {
     //     metrics: {
@@ -316,7 +327,7 @@ export default {
       Object.entries(voc[1].metrics).forEach(metric => {
         Object.values(metric[1].class_names_list).forEach((el, i) => {
           this.allvocs2[metric[0]][voc[0]].arr.push({
-            x: (new Date(metric[1].class_names_list[i])).getTime(),
+            x: new Date(metric[1].class_names_list[i]).getTime(),
             y: metric[1].class_names_lisclass_metrics_listt[i]
           });
         });
@@ -373,7 +384,7 @@ input[type="checkbox"] {
   margin-left: 32px;
 }
 .rewq {
-  text-align: center!important;
+  text-align: center !important;
   color: red;
   margin-left: 32%;
   font-size: 1.5em;

@@ -3,7 +3,7 @@
     <div class="maintext">{{version_name}}</div>
     <div v-if="metrics">
       <div v-for="(me,index) in arr" :key="version_name+index">
-        <Chart v-if="list.includes(Object.keys(metrics)[index])" :maxv="maxv" :metric="me" :name="Object.keys(metrics)[index]"></Chart>
+        <Chart v-if="list.includes(Object.keys(metrics)[index]) && index < $store.state.graphCount" :maxv="maxv" :metric="me" :name="Object.keys(metrics)[index]"></Chart>
       </div>
     </div>
   </div>
@@ -28,6 +28,7 @@ export default {
   },
   props: ['version_name','metrics', 'maxv', 'list'],
   mounted () {
+    this.$store.dispatch("fetchGraphCount", 5)
   }
 }
 </script>

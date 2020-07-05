@@ -6,7 +6,7 @@
     </span>
     <div v-if="metrics && timer">
       <div class="qweewq" v-for="(me,index) in arr" :key="vocabulary_name+index">
-        <Chart :type="'line'" v-if="list.includes(Object.keys(metrics)[index])" :includeAverageNumbers="true" :derivativeFunction="checkboxderivativeFunction" :metric="me" :name="Object.keys(metrics)[index]"></Chart>
+        <Chart :type="'line'" v-if="list.includes(Object.keys(metrics)[index]) && index < $store.state.graphCount" :includeAverageNumbers="true" :derivativeFunction="checkboxderivativeFunction" :metric="me" :name="Object.keys(metrics)[index]"></Chart>
       </div>
     </div>
   </div>
@@ -41,6 +41,7 @@ export default {
   },
   props: ['vocabulary_name','metrics', 'list'],
   mounted () {
+    this.$store.dispatch("fetchGraphCount", 5)
   }
 }
 </script>
