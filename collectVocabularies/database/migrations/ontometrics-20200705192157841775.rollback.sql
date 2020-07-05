@@ -1,0 +1,1 @@
+DELETE FROM public.vocabulary_metrics WHERE name = 'hr'
