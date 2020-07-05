@@ -14,7 +14,7 @@
 
 <script>
 import Linee from "./Line.js";
-import moment from "moment"
+import moment from "moment";
 
 export default {
   name: "Chart2",
@@ -23,6 +23,9 @@ export default {
       datacollection: null,
       options: {
         maintainAspectRatio: false,
+        legend: {
+          display: this.$store.state.legend
+        },
         scales: {
           xAxes: [
             {
@@ -30,9 +33,9 @@ export default {
               position: "bottom",
               ticks: {
                 userCallback: function(label) {
-                    return moment(label).format("DD.MM.YYYY");
+                  return moment(label).format("DD.MM.YYYY");
                 }
-             }
+              }
             }
           ]
         }
@@ -80,6 +83,12 @@ export default {
     },
     log() {
       this.asd();
+    },
+    "$store.state.transparency"() {
+      this.asd();
+    },
+    "$store.state.legend"() {
+      this.updateOptions();
     }
   },
   props: ["radar", "namee", "log"],
@@ -87,6 +96,27 @@ export default {
     this.asd();
   },
   methods: {
+    updateOptions() {
+      this.options = {
+        maintainAspectRatio: false,
+        legend: {
+          display: this.$store.state.legend
+        },
+        scales: {
+          xAxes: [
+            {
+              type: "linear",
+              position: "bottom",
+              ticks: {
+                userCallback: function(label) {
+                  return moment(label).format("DD.MM.YYYY");
+                }
+              }
+            }
+          ]
+        }
+      };
+    },
     asd() {
       let datasets = [];
       Object.entries(this.radar).forEach((voc, i) => {
@@ -98,8 +128,12 @@ export default {
               x: el.x
             };
           }),
-          backgroundColor: this.colors[i % this.colors.length] + "30",
-          borderColor: this.colors[i % this.colors.length]
+          backgroundColor:
+            this.colors[i % this.colors.length] +
+            this.$store.state.transparency.background,
+          borderColor:
+            this.colors[i % this.colors.length] +
+            this.$store.state.transparency.line
         });
       });
       this.datacollection = {

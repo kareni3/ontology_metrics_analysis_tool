@@ -22,6 +22,9 @@ export default {
       datacollection: null,
       options: {
         maintainAspectRatio: false,
+        legend: {
+          display: this.$store.state.legend,
+        },
         scales: {
           xAxes: [
             {
@@ -71,6 +74,12 @@ export default {
   watch: {
     radar() {
       this.asd();
+    },
+    "$store.state.transparency"() {
+      this.asd();
+    },
+    "$store.state.legend"() {
+      this.updateOptions();
     }
   },
   props: ["radar", "namee"],
@@ -78,6 +87,22 @@ export default {
     this.asd();
   },
   methods: {
+    updateOptions() {
+      this.options = {
+        maintainAspectRatio: false,
+        legend: {
+          display: this.$store.state.legend,
+        },
+        scales: {
+          xAxes: [
+            {
+              type: "linear",
+              position: "bottom"
+            }
+          ]
+        }
+      }
+    },
     asd() {
       let datasets = [];
       Object.entries(this.radar).forEach((voc, i) => {
@@ -95,8 +120,8 @@ export default {
               x: el.x
             };
           }),
-          backgroundColor: this.colors[i % this.colors.length] + "30",
-          borderColor: this.colors[i % this.colors.length]
+          backgroundColor: this.colors[i % this.colors.length] + this.$store.state.transparency.background,
+          borderColor: this.colors[i % this.colors.length] + this.$store.state.transparency.line,
         });
       });
       this.datacollection = {

@@ -21,7 +21,10 @@ export default {
     return {
       datacollection: null,
       options: {
-        maintainAspectRatio: false
+        maintainAspectRatio: false,
+        legend: {
+          display: this.$store.state.legend
+        }
       },
       colors: [
         "#f8" + "79" + "79",
@@ -64,11 +67,15 @@ export default {
       Object.entries(this.radar).forEach((el, i) => {
         dataset.push({
           label: el[0],
-          data: el[1].class_names_lisclass_metrics_listt.filter((e,i) => {
+          data: el[1].class_names_lisclass_metrics_listt.filter((e, i) => {
             return this.list.includes(el[1].class_names_list[i]);
           }),
-          backgroundColor: this.colors[i % this.colors.length] + "30",
-          borderColor: this.colors[i % this.colors.length]
+          backgroundColor:
+            this.colors[i % this.colors.length] +
+            this.$store.state.transparency.background,
+          borderColor:
+            this.colors[i % this.colors.length] +
+            this.$store.state.transparency.line
         });
       });
       return dataset;
@@ -82,16 +89,32 @@ export default {
         ].class_names_list.filter(el => this.list.includes(el)),
         datasets: this.dataset
       };
+    },
+    "$store.state.legend"() {
+      this.updateOptions();
     }
   },
   props: ["radar", "list"],
   mounted() {
-    this.datacollection = {
+    this.asd();
+  },
+  methods: {
+    updateOptions() {
+      this.options = {
+        maintainAspectRatio: false,
+        legend: {
+          display: this.$store.state.legend
+        }
+      };
+    },
+    asd() {
+      this.datacollection = {
         labels: this.radar[
           Object.keys(this.radar)[0]
         ].class_names_list.filter(el => this.list.includes(el)),
         datasets: this.dataset
       };
+    }
   }
 };
 </script>
@@ -112,7 +135,7 @@ a {
   color: #42b983;
 }
 .asdds {
-  color:red;
+  color: red;
   font-size: 1.4em;
 }
 </style>
