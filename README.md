@@ -8,7 +8,7 @@
 - install libraries:
 ```sh
 cd ./collectVocabularies
-python setup.py install
+pip install -r libs.txt
 ```
 - download vocabularies in rdf or owl format
 - create folder ./vocabularies in ./collectVocabularies folder 
