@@ -1,7 +1,7 @@
 ALTER TABLE "class"
-    DROP CONSTRAINT vocabulary_id;
+    DROP CONSTRAINT IF EXISTS vocabulary_id;
 ALTER TABLE vocabulary_metrics
-    DROP CONSTRAINT vocabulary_id;
+    DROP CONSTRAINT IF EXISTS vocabulary_id;
 ALTER TABLE public.vocabulary_metrics
     ADD CONSTRAINT vocabulary_id PRIMARY KEY (name, version);
 ALTER TABLE "class" 
@@ -38,6 +38,6 @@ ALTER TABLE "class"
 	DROP COLUMN IF EXISTS vocabulary_id;
 
 ALTER TABLE "class"
-    DROP CONSTRAINT class_id;
+    DROP CONSTRAINT IF EXISTS class_id;
 ALTER TABLE public."class"
     ADD CONSTRAINT class_id PRIMARY KEY (name, vocabulary_name, vocabulary_version_number);

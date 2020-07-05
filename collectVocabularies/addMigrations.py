@@ -45,7 +45,8 @@ def run():
         npClassMetrics = npClassMetrics.transpose()
         cName=""
         query_sql = 'INSERT INTO public.class(name, vocabulary_name, vocabulary_version_number, "Classconnectivity", "Classfulness", "Classimportance", "Classinheritancerichness", "Classreadability", "Classrelationshiprichness", "Classchildrencount", "Classinstancescount", "Classpropertiescount") VALUES '
-                     
+        check_class_query = False   
+
         for ind1, asd in enumerate(npClassMetrics):
             check = False
             if ind1 < 1: 
@@ -57,10 +58,11 @@ def run():
                 if (ind-1) % 10 == 0:
                     if check and sqlstr != "":
                         query_sql+='('+sqlstr+'), ' 
+                        check_class_query = True
                         sqlstr = ""
                     if npClassMetrics[ind1][ind] != "NULL":
                         cName = npClassMetrics[0][ind][6:]
-                        sqlstr += "'"+cName+"'" + ", '" + str(dir) + "', " + str(ind1) # !!!!!!!!!!!!!!!!!!!!!!!!! ПЕРЕДЕЛАТЬ ПРАЙМАРИ КЕЙ НА НАЗВАНИЕ И НОМЕР ВЕРСИИ А НЕ АЙДИ И ПЕРЕПИСАТЬ НОДУ ДЖС
+                        sqlstr += "'"+cName+"'" + ", '" + str(dir) + "', " + str(ind1)
                         check = True
                     else:
                         cName = ""
@@ -69,10 +71,14 @@ def run():
                     sqlstr += metric
         query_sql = query_sql[:len(query_sql)-2]
         query_sql += ';'
-        print(datetime.now().strftime("%Y%m%d%H%M%S%f"))
-        f = open('./database/migrations/ontometrics-'+datetime.now().strftime("%Y%m%d%H%M%S%f")+'.sql', 'tw', encoding='utf-8')
-        f.write(query_sql)
-        f.close()
+        if (check_class_query):
+            timestamp = datetime.now().strftime("%Y%m%d%H%M%S%f")
+            f = open('./database/migrations/ontometrics-'+timestamp+'.sql', 'tw', encoding='utf-8')
+            f.write(query_sql)
+            f.close()
+            f = open('./database/migrations/ontometrics-'+timestamp+'.rollback.sql', 'tw', encoding='utf-8')
+            f.write("DELETE FROM public.class WHERE vocabulary_name = '" + dir + "'")
+            f.close()
         query_sql = ""
         sqlstr = ""
         time.sleep(0.01)
@@ -101,9 +107,12 @@ def run():
             sqlstr = ""
         query_sql = query_sql[:len(query_sql)-2]
         query_sql += ';'
-        print(datetime.now().strftime("%Y%m%d%H%M%S%f"))
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S%f")
         f = open('./database/migrations/ontometrics-'+datetime.now().strftime("%Y%m%d%H%M%S%f")+'.sql', 'tw', encoding='utf-8')
         f.write(query_sql)
+        f.close()
+        f = open('./database/migrations/ontometrics-'+timestamp+'.rollback.sql', 'tw', encoding='utf-8')
+        f.write("DELETE FROM public.vocabulary_metrics WHERE name = '" + dir + "'")
         f.close()
         query_sql = ""
         sqlstr = ""
