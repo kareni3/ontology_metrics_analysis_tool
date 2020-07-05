@@ -1,5 +1,0 @@
-yoyo-migrations
-numpy 
-requests 
-pandas 
-xlsxwriter 

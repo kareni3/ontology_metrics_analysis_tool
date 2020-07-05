@@ -1,7 +1,7 @@
 {
     "db_name": "onto_metrics",
     "host": "localhost",
-    "port": "3000",
+    "port": "3002",
     "user_name": "postgres",
-    "password": "123456"
+    "password": "480798"
 }
