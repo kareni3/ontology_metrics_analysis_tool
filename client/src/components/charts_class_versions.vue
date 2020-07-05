@@ -3,7 +3,7 @@
     <div class="maintext">{{version_name}}</div>
     <div v-if="metrics">
       <div v-for="(me,index) in arr" :key="version_name+index">
-        <Chart v-if="list.includes(Object.keys(metrics)[index]) && index < $store.state.graphCount" :maxv="maxv" :metric="me" :name="Object.keys(metrics)[index]"></Chart>
+        <Chart v-if="index < $store.state.graphCount" :maxv="maxv" :metric="me[1]" :name="me[0]"></Chart>
       </div>
     </div>
   </div>
@@ -23,7 +23,11 @@ export default {
   },
   computed: {
     arr() {
-      return this.metrics ? Object.values(this.metrics): []
+      return this.metrics
+        ? Object.entries(this.metrics).filter((el) =>
+            this.list.includes(el[0])
+          )
+        : [];
     }
   },
   props: ['version_name','metrics', 'maxv', 'list'],

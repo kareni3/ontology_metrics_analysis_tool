@@ -1,12 +1,19 @@
 <template>
   <div class="chart">
-    <div class="maintext">{{vocabulary_name}}</div> 
+    <div class="maintext">{{vocabulary_name}}</div>
     <span class="aaas">
-      <input type="checkbox" v-model="checkboxderivativeFunction">derivative functions
+      <input type="checkbox" v-model="checkboxderivativeFunction" />derivative functions
     </span>
     <div v-if="metrics && timer">
       <div class="qweewq" v-for="(me,index) in arr" :key="vocabulary_name+index">
-        <Chart :type="'line'" v-if="list.includes(Object.keys(metrics)[index]) && index < $store.state.graphCount" :includeAverageNumbers="true" :derivativeFunction="checkboxderivativeFunction" :metric="me" :name="Object.keys(metrics)[index]"></Chart>
+        <Chart
+          :type="'line'"
+          v-if="index < $store.state.graphCount"
+          :includeAverageNumbers="true"
+          :derivativeFunction="checkboxderivativeFunction"
+          :metric="me[1]"
+          :name="me[0]"
+        ></Chart>
       </div>
     </div>
   </div>
@@ -16,11 +23,11 @@
 import Chart from "./Chart_class.vue";
 
 export default {
-  name: 'Chart5',
+  name: "Chart5",
   data() {
     return {
       checkboxderivativeFunction: false,
-      timer: true,
+      timer: true
     };
   },
   // watch: {
@@ -36,14 +43,18 @@ export default {
   },
   computed: {
     arr() {
-      return this.metrics ? Object.values(this.metrics): []
+      return this.metrics
+        ? Object.entries(this.metrics).filter((el) =>
+            this.list.includes(el[0])
+          )
+        : [];
     }
   },
-  props: ['vocabulary_name','metrics', 'list'],
-  mounted () {
-    this.$store.dispatch("fetchGraphCount", 5)
+  props: ["vocabulary_name", "metrics", "list"],
+  mounted() {
+    this.$store.dispatch("fetchGraphCount", 5);
   }
-}
+};
 </script>
 
 <style scoped>
