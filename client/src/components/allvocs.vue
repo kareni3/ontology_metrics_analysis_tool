@@ -118,18 +118,22 @@ export default {
       }, 0)/Object.values(this.radar).length;
     },
     averagePercentageChange() {
+      let counter = 0;
       return Object.values(this.radar).reduce((acc, cur) => {
         const n = +cur.arr[0].y;
+        if (n) counter++
         acc += n ? (+cur.arr[cur.arr.length - 1].y - n)/n*100 : 0;
         return acc;
-      }, 0)/Object.values(this.radar).length;
+      }, 0)/counter;
     },
     averagePercentageChange2() {
+      let counter = 0;
       return Object.values(this.radar).reduce((acc, cur) => {
         const n = (cur.borders.max + cur.borders.min) / 2;
+        if (n) counter++
         acc += n ? (+cur.arr[cur.arr.length - 1].y - n)/n*100 : 0;
         return acc;
-      }, 0)/Object.values(this.radar).length;
+      }, 0)/counter;
     },
     averageChange() {
       return Object.values(this.radar).reduce((acc, cur) => {
