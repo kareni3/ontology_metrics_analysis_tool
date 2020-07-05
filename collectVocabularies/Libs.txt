@@ -1,0 +1,6 @@
+yoyo-migrations
+numpy 
+requests 
+pandas 
+xlsxwriter 
+psycopg2
