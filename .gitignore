@@ -7,3 +7,5 @@ collectVocabularies/metrics/*
 *__pycache__/
 *dist/
 collectVocabularies/*.egg-info/*
+database.config.json
+Libs.txt
