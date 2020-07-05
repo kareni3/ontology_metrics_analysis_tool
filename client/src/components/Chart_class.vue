@@ -1,6 +1,6 @@
 <template>
   <div class="chart info_block__container">
-    <div v-if="includeAverageNumbers" class="info_block" >
+    <div v-if="includeAverageNumbers && $store.state.averageMetrics" class="info_block" >
       <div class="info_block__item" v-if="averageValue !== undefined">Average Value = {{averageValue}}</div>
       <div class="info_block__item" v-if="averageChange !== undefined">Average Change = {{averageChange}} 
         <span class="info_block__up" v-if="averageChange>0">⇗</span> <span class="info_block__down" v-else-if="averageChange<0">⇘</span></div>

@@ -26,7 +26,10 @@
         <vue-slider class="vslider" v-model="sliderLine" />
       </div>
       <br />
-      <input type="checkbox" class="qq1" name="el" value="el" v-model="checkboxLegend" /> Legend
+      <div class="checkboxes">
+        <input type="checkbox" class="qq1" name="el" value="el" v-model="checkboxLegend" /> Legend
+        <input type="checkbox" class="qq1" name="el" value="el" v-model="checkboxAverageMetrics" /> Average Metrics
+      </div>
       <br />
     </div>
     <Charts
@@ -60,6 +63,7 @@ export default {
       sliderBackground: 0,
       sliderLine: 0,
       checkboxLegend: true,
+      checkboxAverageMetrics: true,
     };
   },
   components: {
@@ -110,7 +114,10 @@ export default {
     },
     checkboxLegend(v) {
       this.$store.dispatch("fetchLegend",v)
-    }
+    },
+    checkboxAverageMetrics(v) {
+      this.$store.dispatch("fetchAverageMetrics",v)
+    },
   },
   methods: {
     change(i) {

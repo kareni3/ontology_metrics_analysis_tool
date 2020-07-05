@@ -1,5 +1,40 @@
 <template>
-  <div class="chart">
+  <div class="chart info_block__container">
+    <div v-if="includeAverageNumbers && $store.state.averageMetrics" class="info_block">
+      <div
+        class="info_block__item"
+        v-if="averageValue !== undefined"
+      >Average Value = {{averageValue.toFixed(2)}}</div>
+      <div
+        class="info_block__item"
+        v-if="averageMaxValue !== undefined"
+      >Average MaxValue = {{averageMaxValue.toFixed(2)}}</div>
+      <div
+        class="info_block__item"
+        v-if="averageMinValue !== undefined"
+      >Average MinValue = {{averageMinValue.toFixed(2)}}</div>
+      <div title="Average Change does not take into account vocabularies that started from ZERO" class="info_block__item" v-if="averagePercentageChange !== undefined">
+        Average Change* = {{averagePercentageChange.toFixed(2)}}%
+        <span
+          class="info_block__up"
+          v-if="averagePercentageChange>0"
+        >⇗</span>
+        <span class="info_block__down" v-else-if="averagePercentageChange<0">⇘</span>
+      </div>
+      <div title="Average Change2.0 calculates percentage change from average value" class="info_block__item" v-if="averagePercentageChange2 !== undefined">
+        Average Change2.0* = {{averagePercentageChange2.toFixed(2)}}%
+        <span
+          class="info_block__up"
+          v-if="averagePercentageChange2>0"
+        >⇗</span>
+        <span class="info_block__down" v-else-if="averagePercentageChange2<0">⇘</span>
+      </div>
+      <div class="info_block__item" v-if="averageChange !== undefined">
+        Average Change = {{averageChange.toFixed(2)}}
+        <span class="info_block__up" v-if="averageChange>0">⇗</span>
+        <span class="info_block__down" v-else-if="averageChange<0">⇘</span>
+      </div>
+    </div>
     <div>
       <span class="asdds">{{namee}}</span>
       <Linee
@@ -23,7 +58,7 @@ export default {
       options: {
         maintainAspectRatio: false,
         legend: {
-          display: this.$store.state.legend,
+          display: this.$store.state.legend
         },
         scales: {
           xAxes: [
@@ -64,6 +99,44 @@ export default {
     Linee
   },
   computed: {
+    averageValue() {
+      return Object.values(this.radar).reduce((acc, cur) => {
+        acc += (cur.borders.max + cur.borders.min) / 2;
+        return acc;
+      }, 0)/Object.values(this.radar).length;
+    },
+    averageMaxValue() {
+      return Object.values(this.radar).reduce((acc, cur) => {
+        acc += cur.borders.max;
+        return acc;
+      }, 0)/Object.values(this.radar).length;
+    },
+    averageMinValue() {
+      return Object.values(this.radar).reduce((acc, cur) => {
+        acc += cur.borders.min;
+        return acc;
+      }, 0)/Object.values(this.radar).length;
+    },
+    averagePercentageChange() {
+      return Object.values(this.radar).reduce((acc, cur) => {
+        const n = +cur.arr[0].y;
+        acc += n ? (+cur.arr[cur.arr.length - 1].y - n)/n*100 : 0;
+        return acc;
+      }, 0)/Object.values(this.radar).length;
+    },
+    averagePercentageChange2() {
+      return Object.values(this.radar).reduce((acc, cur) => {
+        const n = (cur.borders.max + cur.borders.min) / 2;
+        acc += n ? (+cur.arr[cur.arr.length - 1].y - n)/n*100 : 0;
+        return acc;
+      }, 0)/Object.values(this.radar).length;
+    },
+    averageChange() {
+      return Object.values(this.radar).reduce((acc, cur) => {
+        acc += +cur.arr[cur.arr.length - 1].y - (+cur.arr[0].y);
+        return acc;
+      }, 0)/Object.values(this.radar).length;
+    },
     myStyles() {
       return {
         height: `300px`,
@@ -82,7 +155,13 @@ export default {
       this.updateOptions();
     }
   },
-  props: ["radar", "namee"],
+  props: {
+    radar: {},
+    namee: {},
+    includeAverageNumbers: {
+      default: true
+    }
+  },
   mounted() {
     this.asd();
   },
@@ -91,7 +170,7 @@ export default {
       this.options = {
         maintainAspectRatio: false,
         legend: {
-          display: this.$store.state.legend,
+          display: this.$store.state.legend
         },
         scales: {
           xAxes: [
@@ -101,7 +180,7 @@ export default {
             }
           ]
         }
-      }
+      };
     },
     asd() {
       let datasets = [];
@@ -120,8 +199,12 @@ export default {
               x: el.x
             };
           }),
-          backgroundColor: this.colors[i % this.colors.length] + this.$store.state.transparency.background,
-          borderColor: this.colors[i % this.colors.length] + this.$store.state.transparency.line,
+          backgroundColor:
+            this.colors[i % this.colors.length] +
+            this.$store.state.transparency.background,
+          borderColor:
+            this.colors[i % this.colors.length] +
+            this.$store.state.transparency.line
         });
       });
       this.datacollection = {
@@ -149,5 +232,36 @@ a {
 }
 .asdds {
   font-size: 1.4em;
+}
+.info_block {
+  width: 260px;
+  text-align: left;
+  position: absolute;
+  top: 24px;
+  right: 12px;
+  z-index: 1;
+  font-weight: 600;
+  background-color: #ffffff80;
+  color: #000000d0;
+  border-radius: 4px;
+  border: 1px solid #00000060;
+  padding: 12px;
+}
+.info_block:hover {
+  background-color: #ffffffd0;
+  color: #000000f0;
+  border: 1px solid #00000080;
+}
+.info_block__container {
+  position: relative;
+}
+.info_block__item {
+  margin-bottom: 8px;
+}
+.info_block__up {
+  color: #22aa22d0;
+}
+.info_block__down {
+  color: #ff5555d0;
 }
 </style>

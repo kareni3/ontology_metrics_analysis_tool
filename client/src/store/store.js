@@ -10,6 +10,7 @@ const store = new Vuex.Store({
         line: 'd0',
     },
     legend: true,
+    averageMetrics: true,
   },
   mutations: {
     fetchTransparency(state, transparency) {
@@ -18,6 +19,9 @@ const store = new Vuex.Store({
     fetchLegend(state, legend) {
       state.legend = legend;
     },
+    fetchAverageMetrics(state, averageMetrics) {
+      state.averageMetrics = averageMetrics;
+    },
   },
   actions: {
     fetchTransparency({ commit }, transparency) {
@@ -25,6 +29,9 @@ const store = new Vuex.Store({
     },
     fetchLegend({ commit }, legend) {
       commit('fetchLegend', legend);
+    },
+    fetchAverageMetrics({ commit }, averageMetrics) {
+      commit('fetchAverageMetrics', averageMetrics);
     },
   }
 })
