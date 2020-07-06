@@ -49,14 +49,18 @@ app.get('/vocabularies', async (req, res) => {
     const version_number = req.query.version_number
     let query = ""
     if (version_number){
-        query = `SELECT * FROM vocabulary_metrics
-        where name in (
+        query = `select * from vocabulary_metrics as vm
+        inner join vocabulary_external_metrics as vem
+        on vm.name = vem.vocabulary_name
+        where vm.name in (
             SELECT name FROM vocabulary_metrics
             GROUP BY name
             HAVING count(*)>=${version_number}
         )`;
     } else {
-        query = `SELECT * FROM vocabulary_metrics`;
+        query = `select * from vocabulary_metrics as vm
+        inner join vocabulary_external_metrics as vem
+        on vm.name = vem.vocabulary_name`;
     }
     client.query(query, (err, res1) => {
         if (err) {
