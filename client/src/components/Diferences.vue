@@ -77,7 +77,7 @@ export default {
     arr13() {
       let vocabularies_op = new Object();
       Object.keys(this.vocabularies[0]).forEach(metric => {
-        if (!["name", "id", "version", "version_name"].includes(metric)) {
+        if (!["name", "id", "version", "version_name", "incoming_links", "outgoing_links"].includes(metric)) {
           vocabularies_op[metric] = {
             class_names_list: [],
             class_names_lisclass_metrics_listt: []
@@ -87,7 +87,7 @@ export default {
       let versions = {};
       this.vocabularies.forEach(vocabulary => {
         Object.entries(vocabulary).forEach(metric => {
-          if (!["name", "id", "version", "version_name"].includes(metric[0])) {
+          if (!["name", "id", "version", "version_name", "incoming_links", "outgoing_links"].includes(metric[0])) {
             let index = vocabularies_op[metric[0]].class_names_list.indexOf(
               vocabulary.name
             );
@@ -134,7 +134,7 @@ export default {
     // };
     this.vocabularies_op = new Object();
     Object.keys(this.vocabularies[0]).forEach(metric => {
-      if (!["name", "id", "version", "version_name"].includes(metric)) {
+      if (!["name", "id", "version", "version_name", "incoming_links", "outgoing_links"].includes(metric)) {
         if (!this.list1.includes(metric)) {
           this.list1.push(metric);
           this.checkboxvalue.push(true);
@@ -148,7 +148,7 @@ export default {
     let versions = {};
     this.vocabularies.forEach(vocabulary => {
       Object.entries(vocabulary).forEach(metric => {
-        if (!["name", "id", "version", "version_name"].includes(metric[0])) {
+        if (!["name", "id", "version", "version_name", "incoming_links", "outgoing_links"].includes(metric[0])) {
           let index = this.vocabularies_op[metric[0]].class_names_list.indexOf(
             vocabulary.name
           );
