@@ -9,6 +9,9 @@
       <Bar v-if="datacollection" :chart-data="datacollection" :styles="myStyles" :options="options"></Bar>
     </div>
     <div v-else-if="type==='line'">
+      <span class="asddsa">
+        {{name}}
+      </span>
       <Linee
         v-if="datacollection"
         :chart-data="datacollection"
@@ -203,5 +206,8 @@ a {
 }
 .info_block__down {
   color: #ff5555d0
+}
+.asddsa {
+  font-size: 2em;
 }
 </style>
