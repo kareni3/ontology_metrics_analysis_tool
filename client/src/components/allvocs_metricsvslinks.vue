@@ -80,7 +80,8 @@ export default {
               position: "bottom",
               ticks: {
                 userCallback: function(label) {
-                  return Math.exp(+label).toFixed();
+                  let n = (Math.exp(+label)-1)
+                  return n > 10 ? n.toFixed() : n.toFixed(2);
                 }
               }
             }
@@ -89,7 +90,8 @@ export default {
             {
               ticks: {
                 userCallback: function(label) {
-                  return Math.exp(+label).toFixed();
+                  let n = (Math.exp(+label)-1)
+                  return n > 10 ? n.toFixed() : n.toFixed(2);
                 }
               }
             }
