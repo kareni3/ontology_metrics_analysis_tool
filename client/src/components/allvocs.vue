@@ -13,7 +13,11 @@
         class="info_block__item"
         v-if="averageMinValue !== undefined"
       >Average MinValue = {{averageMinValue.toFixed(2)}}</div>
-      <div title="Average Change does not take into account vocabularies that started from ZERO" class="info_block__item" v-if="averagePercentageChange !== undefined">
+      <div
+        title="Average Change does not take into account vocabularies that started from ZERO"
+        class="info_block__item"
+        v-if="averagePercentageChange !== undefined"
+      >
         Average Change* = {{averagePercentageChange.toFixed(2)}}%
         <span
           class="info_block__up"
@@ -21,7 +25,11 @@
         >⇗</span>
         <span class="info_block__down" v-else-if="averagePercentageChange<0">⇘</span>
       </div>
-      <div title="Average Change2.0 calculates percentage change from average value" class="info_block__item" v-if="averagePercentageChange2 !== undefined">
+      <div
+        title="Average Change2.0 calculates percentage change from average value"
+        class="info_block__item"
+        v-if="averagePercentageChange2 !== undefined"
+      >
         Average Change2.0* = {{averagePercentageChange2.toFixed(2)}}%
         <span
           class="info_block__up"
@@ -31,7 +39,10 @@
       </div>
       <div class="info_block__item" v-if="averageChange !== undefined">
         Average Change = {{averageChange.toFixed(2)}}
-        <span class="info_block__up" v-if="averageChange>0">⇗</span>
+        <span
+          class="info_block__up"
+          v-if="averageChange>0"
+        >⇗</span>
         <span class="info_block__down" v-else-if="averageChange<0">⇘</span>
       </div>
     </div>
@@ -100,46 +111,58 @@ export default {
   },
   computed: {
     averageValue() {
-      return Object.values(this.radar).reduce((acc, cur) => {
-        acc += (cur.borders.max + cur.borders.min) / 2;
-        return acc;
-      }, 0)/Object.values(this.radar).length;
+      return (
+        Object.values(this.radar).reduce((acc, cur) => {
+          acc += (cur.borders.max + cur.borders.min) / 2;
+          return acc;
+        }, 0) / Object.values(this.radar).length
+      );
     },
     averageMaxValue() {
-      return Object.values(this.radar).reduce((acc, cur) => {
-        acc += cur.borders.max;
-        return acc;
-      }, 0)/Object.values(this.radar).length;
+      return (
+        Object.values(this.radar).reduce((acc, cur) => {
+          acc += cur.borders.max;
+          return acc;
+        }, 0) / Object.values(this.radar).length
+      );
     },
     averageMinValue() {
-      return Object.values(this.radar).reduce((acc, cur) => {
-        acc += cur.borders.min;
-        return acc;
-      }, 0)/Object.values(this.radar).length;
+      return (
+        Object.values(this.radar).reduce((acc, cur) => {
+          acc += cur.borders.min;
+          return acc;
+        }, 0) / Object.values(this.radar).length
+      );
     },
     averagePercentageChange() {
       let counter = 0;
-      return Object.values(this.radar).reduce((acc, cur) => {
-        const n = +cur.arr[0].y;
-        if (n) counter++
-        acc += n ? (+cur.arr[cur.arr.length - 1].y - n)/n*100 : 0;
-        return acc;
-      }, 0)/counter;
+      return (
+        Object.values(this.radar).reduce((acc, cur) => {
+          const n = +cur.arr[0].y;
+          if (n) counter++;
+          acc += n ? ((+cur.arr[cur.arr.length - 1].y - n) / n) * 100 : 0;
+          return acc;
+        }, 0) / counter
+      );
     },
     averagePercentageChange2() {
       let counter = 0;
-      return Object.values(this.radar).reduce((acc, cur) => {
-        const n = (cur.borders.max + cur.borders.min) / 2;
-        if (n) counter++
-        acc += n ? (+cur.arr[cur.arr.length - 1].y - n)/n*100 : 0;
-        return acc;
-      }, 0)/counter;
+      return (
+        Object.values(this.radar).reduce((acc, cur) => {
+          const n = (cur.borders.max + cur.borders.min) / 2;
+          counter++; // if (n) TODO: add checkbox to remove vocabulaies without changes
+          acc += n ? ((+cur.arr[cur.arr.length - 1].y - n) / n) * 100 : 0;
+          return acc;
+        }, 0) / counter
+      );
     },
     averageChange() {
-      return Object.values(this.radar).reduce((acc, cur) => {
-        acc += +cur.arr[cur.arr.length - 1].y - (+cur.arr[0].y);
-        return acc;
-      }, 0)/Object.values(this.radar).length;
+      return (
+        Object.values(this.radar).reduce((acc, cur) => {
+          acc += +cur.arr[cur.arr.length - 1].y - +cur.arr[0].y;
+          return acc;
+        }, 0) / Object.values(this.radar).length
+      );
     },
     myStyles() {
       return {
@@ -157,6 +180,9 @@ export default {
     },
     "$store.state.legend"() {
       this.updateOptions();
+    },
+    derivativeFunction() {
+      this.asd();
     }
   },
   props: {
@@ -164,6 +190,9 @@ export default {
     namee: {},
     includeAverageNumbers: {
       default: true
+    },
+    derivativeFunction: {
+      default: false
     }
   },
   mounted() {
@@ -191,15 +220,22 @@ export default {
       Object.entries(this.radar).forEach((voc, i) => {
         datasets.push({
           label: voc[0],
-          data: voc[1].arr.map(el => {
-            return {
-              y:
+          data: voc[1].arr.map((el, ind) => {
+            let elY = 0;
+            if (this.derivativeFunction) {
+              elY = ind !== 0 ? +voc[1].arr[ind].y - voc[1].arr[ind - 1].y : 0;
+              elY = elY >= 0 ? Math.log(elY + 1) : -Math.log(1 - elY);
+            } else {
+              elY =
                 voc[1].borders.max === voc[1].borders.min
                   ? voc[1].borders.max === 0
                     ? 0
                     : 0.5
                   : (+el.y - voc[1].borders.min) /
-                    (voc[1].borders.max - voc[1].borders.min),
+                    (voc[1].borders.max - voc[1].borders.min);
+            }
+            return {
+              y: elY,
               x: el.x
             };
           }),
@@ -211,6 +247,22 @@ export default {
             this.$store.state.transparency.line
         });
       });
+      if (this.derivativeFunction) {
+        datasets.push({
+          label: "f(x)=0",
+          data: [
+            {
+              x: 0,
+              y: 0
+            },
+            {
+              x: 1,
+              y: 0
+            }
+          ],
+          borderColor: "#000000a0"
+        });
+      }
       this.datacollection = {
         datasets: datasets
       };

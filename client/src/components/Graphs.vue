@@ -47,8 +47,16 @@
     <div
       v-if="checkboxvalueallvoca && !checkboxvalueallvoca2 && !(checkboxvalueallvoca3 || checkboxvalueallvoca4)"
     >
+      <span class="aaas2">
+        <input type="checkbox" v-model="checkboxderivativeFunction" />derivative functions
+      </span>
       <div v-for="(el, ind) in arr14" :key="el[0]">
-        <allvocs v-if="ind < $store.state.graphCount" :radar="el[1]" :namee="el[0]" />
+        <allvocs
+          v-if="ind < $store.state.graphCount"
+          :radar="el[1]"
+          :namee="el[0]"
+          :derivativeFunction="checkboxderivativeFunction"
+        />
       </div>
     </div>
     <div v-else-if="checkboxvalueallvoca && checkboxvalueallvoca2">
@@ -119,7 +127,8 @@ export default {
       checkboxvalueradar: false,
       checkboxvalueallvoca: false,
       checkboxvalueallvoca3: false,
-      checkboxvalueallvoca4: false
+      checkboxvalueallvoca4: false,
+      checkboxderivativeFunction: false
     };
   },
   watch: {
@@ -135,7 +144,7 @@ export default {
         this.checkboxvalueallvoca4 = false;
         this.checkboxvalueallvoca2 = false;
       }
-      this.changeLinks()
+      this.changeLinks();
       this.$store.dispatch("fetchGraphCount", 5);
     },
     checkboxvalueallvoca4(v) {
@@ -143,7 +152,7 @@ export default {
         this.checkboxvalueallvoca3 = false;
         this.checkboxvalueallvoca2 = false;
       }
-      this.changeLinks()
+      this.changeLinks();
       this.$store.dispatch("fetchGraphCount", 5);
     },
     checkboxvalueallvoca() {
@@ -279,7 +288,8 @@ export default {
 
       Object.entries(vocabulary).forEach(metric => {
         if (["incoming_links", "outgoing_links"].includes(metric[0])) {
-          if (!this.voc_links[vocabulary.name]) this.voc_links[vocabulary.name] = {};
+          if (!this.voc_links[vocabulary.name])
+            this.voc_links[vocabulary.name] = {};
           this.voc_links[vocabulary.name][metric[0]] = metric[1];
         }
         if (
@@ -290,7 +300,7 @@ export default {
             "version_name",
             "incoming_links",
             "outgoing_links",
-              "vocabulary_name"
+            "vocabulary_name"
           ].includes(metric[0])
         ) {
           this.vocabularies_op[vocabulary.name].metrics[
@@ -381,7 +391,7 @@ export default {
       });
     });
 
-    this.changeLinks()
+    this.changeLinks();
 
     this.allvocs2 = {};
     Object.keys(
@@ -424,7 +434,11 @@ export default {
       Object.entries(this.vocabularies_op).forEach(voc => {
         Object.entries(voc[1].metrics).forEach(metric => {
           this.allvocs_metricsvslinks[metric[0]].push({
-            x: Math.log(+(this.checkboxvalueallvoca4 ? this.voc_links[voc[0]].outgoing_links : this.voc_links[voc[0]].incoming_links) + 1),
+            x: Math.log(
+              +(this.checkboxvalueallvoca4
+                ? this.voc_links[voc[0]].outgoing_links
+                : this.voc_links[voc[0]].incoming_links) + 1
+            ),
             y: Math.log(
               +metric[1].class_names_lisclass_metrics_listt[
                 metric[1].class_names_lisclass_metrics_listt.length - 1
@@ -473,6 +487,12 @@ a {
 .aaas1 {
   text-align: left;
   display: inline-block;
+  min-width: 300px;
+}
+.aaas2 {
+  text-align: center;
+  display: inline-block;
+  width: 380px !important;
   min-width: 300px;
 }
 input[type="checkbox"] {
