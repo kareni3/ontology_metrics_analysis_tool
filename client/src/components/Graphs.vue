@@ -422,11 +422,11 @@ export default {
       Object.entries(this.vocabularies_op).forEach(voc => {
         Object.entries(voc[1].metrics).forEach(metric => {
           this.allvocs_metricsvslinks[metric[0]].push({
-            x: Math.log(this.checkboxvalueallvoca4 ? this.voc_links[voc[0]].outgoing_links : this.voc_links[voc[0]].incoming_links),
+            x: Math.log(+(this.checkboxvalueallvoca4 ? this.voc_links[voc[0]].outgoing_links : this.voc_links[voc[0]].incoming_links) + 1),
             y: Math.log(
-              metric[1].class_names_lisclass_metrics_listt[
+              +metric[1].class_names_lisclass_metrics_listt[
                 metric[1].class_names_lisclass_metrics_listt.length - 1
-              ]
+              ] + 1
             )
           });
         });

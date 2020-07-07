@@ -124,7 +124,7 @@ export default {
           label: voc[0],
           data: voc[1].arr.map(el => {
             return {
-              y: this.log ? Math.log(el.y) : el.y,
+              y: this.log ? Math.log(+el.y + 1) : el.y,
               x: el.x
             };
           }),
