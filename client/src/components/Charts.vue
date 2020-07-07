@@ -11,11 +11,13 @@
       class="aaa"
       v-for="(v,index) in arr1"
       :key="index"
-    >{{v}} |</span>
+    >| {{v}} |</span>
     <Chart
       ref="ch"
       :list="arr12"
       :maxv="maxv"
+      @prevVoc="prevVoc"
+      @nextVoc="nextVoc"
       v-if="vocabularies_op"
       :vocabulary_name="version_name"
       :versions="vocabularies_op[version_name].versions"
@@ -53,6 +55,16 @@ export default {
     }
   },
   methods: {
+    nextVoc() {
+      if (!this.arr1[this.version_id + 1]) return
+      this.version_id += 1
+      this.version_name = this.arr1[this.version_id];
+    },
+    prevVoc() {
+      if (!this.arr1[this.version_id - 1]) return
+      this.version_id -= 1
+      this.version_name = this.arr1[this.version_id];
+    },
     changeversion_id(index,v) {
       this.$refs.ch.changeversion_id(0)
       this.version_id = index;
@@ -89,7 +101,6 @@ export default {
     //   }
     // };
     // console.log(vocabularies);
-    this.version_name = this.vocabularies[0].name
     this.vocabularies_op = new Object();
     this.vocabularies.forEach(vocabulary => {
       if (
@@ -173,6 +184,7 @@ export default {
           this.maxv[metric] = +cclass[metric];
       }
     });
+    this.version_name = this.arr1[0]
     this.list1 = this.list;
   }
 };

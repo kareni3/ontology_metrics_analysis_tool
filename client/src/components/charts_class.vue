@@ -1,8 +1,12 @@
 <template>
   <div class="chart">
-    <div class="maintext">{{vocabulary_name}}</div>
-    |<span @click="changeversion_id(index)" class="aaa" v-for="(v,index) in Object.keys(versions)" :key="index">
-      {{v}} | 
+    <div class="maintext">
+      <button class="big" @click="prevVoc">&lt;</button>
+      <span>{{vocabulary_name}}</span>
+      <button class="big" @click="nextVoc">&gt;</button>
+    </div>
+    <span @click="changeversion_id(index)" class="aaa" v-for="(v,index) in Object.keys(versions)" :key="index">
+      | {{v}} |
     </span>
     <Chart :list="list" :maxv="maxv" :version_name="Object.keys(versions)[version_id]" :metrics="versions[Object.keys(versions)[version_id]].metrics" />
   </div>
@@ -33,6 +37,12 @@ export default {
     // });
   },
   methods:{
+    prevVoc() {
+      this.$emit('prevVoc')
+    },
+    nextVoc() {
+      this.$emit('nextVoc')
+    },
     changeversion_id(index) {
         this.version_id= index
     }
@@ -57,8 +67,19 @@ a {
 }
 .maintext {
   font-size: 3em;
+  margin-bottom: 12px;
 }
 .aaa {
   cursor: pointer;
+}
+.big {
+    height: 2.5rem;
+    vertical-align: middle;
+    width: 2.5rem;
+    font-size: 2rem;
+}
+.maintext span {
+  width: 200px;
+  display: inline-block;
 }
 </style>

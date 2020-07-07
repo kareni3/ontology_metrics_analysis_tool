@@ -13,7 +13,7 @@
         v-model="minVersion"
         @keypress.enter="confirmVersionNumber"
       />
-      <button @click="confirmVersionNumber">Confim</button>
+      <button @click="confirmVersionNumber">Confirm</button>
     </div>
     <div v-if="mmm === dsa[1]">
       <br />

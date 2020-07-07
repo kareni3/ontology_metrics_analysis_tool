@@ -1,6 +1,10 @@
 <template>
   <div class="chart">
-    <div class="maintext">{{vocabulary_name}}</div>
+    <div class="maintext">
+      <button class="big" @click="prevVoc">&lt;</button>
+      <span>{{vocabulary_name}}</span>
+      <button class="big" @click="nextVoc">&gt;</button>
+    </div>
     <span class="aaas">
       <input type="checkbox" v-model="checkboxderivativeFunction" />derivative functions
     </span>
@@ -50,6 +54,14 @@ export default {
         : [];
     }
   },
+  methods: {
+    prevVoc() {
+      this.$emit('prevVoc')
+    },
+    nextVoc() {
+      this.$emit('nextVoc')
+    },
+  },
   props: ["vocabulary_name", "metrics", "list"],
   mounted() {
     this.$store.dispatch("fetchGraphCount", 5);
@@ -76,6 +88,16 @@ input[type="checkbox"] {
   transform: scale(1.5);
 }
 .maintext {
-  font-size: 2em;
+  font-size: 3em;
+}
+.maintext span {
+  width: 200px;
+  display: inline-block;
+}
+.big {
+    height: 2.5rem;
+    vertical-align: middle;
+    width: 2.5rem;
+    font-size: 2rem;
 }
 </style>

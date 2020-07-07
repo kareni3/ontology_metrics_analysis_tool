@@ -85,6 +85,8 @@
       <graphs
         v-if="vocabularies_op"
         :list="arr12"
+        @prevVoc="prevVoc"
+        @nextVoc="nextVoc"
         :vocabulary_name="voc_name"
         :metrics="vocabularies_op[voc_name].metrics"
       />
@@ -420,6 +422,16 @@ export default {
     });
   },
   methods: {
+    nextVoc() {
+      let ind = this.voc_list1.indexOf(this.voc_name) + 1
+      if (!this.voc_list1[ind]) return
+      this.voc_name = this.voc_list1[ind];
+    },
+    prevVoc() {
+      let ind = this.voc_list1.indexOf(this.voc_name) - 1
+      if (!this.voc_list1[ind]) return
+      this.voc_name = this.voc_list1[ind];
+    },
     changeversion_id(index, v) {
       this.voc_name = v;
     },
