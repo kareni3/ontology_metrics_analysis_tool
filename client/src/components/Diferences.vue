@@ -88,7 +88,8 @@ export default {
       let versions = {};
       this.vocabularies.forEach(vocabulary => {
         Object.entries(vocabulary).forEach(metric => {
-          if (!["name", "id", "version", "version_name", "incoming_links", "outgoing_links"].includes(metric[0])) {
+          if (!["name", "id", "version", "version_name", "incoming_links", "outgoing_links",
+              "vocabulary_name"].includes(metric[0])) {
             let index = vocabularies_op[metric[0]].class_names_list.indexOf(
               vocabulary.name
             );
