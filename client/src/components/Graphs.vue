@@ -261,7 +261,8 @@ export default {
               "version",
               "version_name",
               "incoming_links",
-              "outgoing_links"
+              "outgoing_links",
+              "vocabulary_name"
             ].includes(metric)
           ) {
             if (!this.list1.includes(metric)) {
@@ -288,7 +289,8 @@ export default {
             "version",
             "version_name",
             "incoming_links",
-            "outgoing_links"
+            "outgoing_links",
+              "vocabulary_name"
           ].includes(metric[0])
         ) {
           this.vocabularies_op[vocabulary.name].metrics[
