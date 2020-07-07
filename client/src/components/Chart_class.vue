@@ -26,16 +26,50 @@ import Linee from "./Line.js";
 export default {
   name: "Chart2",
   data() {
-    return {};
+    return {
+      options: undefined
+    };
   },
   components: {
     Bar,
     Linee
   },
+  watch: {
+    maxv() {
+      this.updateOptions()
+    }
+  },
+  methods: {
+    updateOptions() {
+      this.options = {
+        maintainAspectRatio: false,
+        scales: {
+          xAxes: [
+            {
+              gridLines: {
+                display: true
+              }
+            }
+          ],
+          yAxes: [
+            {
+              gridLines: {
+                display: true
+              },
+              ticks: {
+                min: this.derivativeFunction ? undefined : 0,
+                max: this.maxv ? this.maxv[this.name] : undefined
+              }
+            }
+          ]
+        }
+      };
+    }
+  },
   computed: {
     myStyles() {
       return {
-        height: `300px`,
+        height: `500px`,
         position: "relative"
       };
     },
@@ -89,31 +123,6 @@ export default {
           }
         ]
       };
-    },
-    options() {
-      return {
-        maintainAspectRatio: false,
-        scales: {
-          xAxes: [
-            {
-              gridLines: {
-                display: true
-              }
-            }
-          ],
-          yAxes: [
-            {
-              gridLines: {
-                display: true
-              },
-              ticks: {
-                min: this.derivativeFunction ? undefined : 0,
-                max: this.maxv[this.name]
-              }
-            }
-          ]
-        }
-      };
     }
   },
   props: {
@@ -143,7 +152,9 @@ export default {
       }
     }
   },
-  mounted() {}
+  mounted() {
+      this.updateOptions()
+  }
 };
 </script>
 
