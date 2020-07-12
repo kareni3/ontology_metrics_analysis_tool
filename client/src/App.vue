@@ -1,187 +1,162 @@
 <template>
-  <div id="app">
-    <div v-if="error" class="zxc1">
+  <div id="app" v-if="isReady">
+    <div class="error_message" v-if="error">
       <span>{{error}}</span>
     </div>
-    <div class="zxc">
-      <span @click="change(i)" v-for="(i,a) in dsa" :key="a" class="sfasa">| {{i}} |</span>
+    <div class="nav mb-12">
+      <span
+        class="nav__page"
+        v-for="name in pageNames"
+        :key="name"
+        @click="changePage(name)"
+      >| {{ name }} |</span>
     </div>
-    <div class="aaa">
-      minimum number of versions
-      <input
-        type="number"
-        v-model="minVersion"
-        @keypress.enter="confirmVersionNumber"
-      />
-      <button @click="confirmVersionNumber">Confirm</button>
-    </div>
-    <div v-if="mmm === dsa[1]">
-      <br />
-      <div class="vslider__container">
-        Background transparency
-        <vue-slider class="vslider" v-model="sliderBackground" />
-      </div>
-      <div class="vslider__container">
-        Line transparency
-        <vue-slider class="vslider" v-model="sliderLine" />
-      </div>
-      <br />
-      <div class="checkboxes">
-        <input type="checkbox" class="qq1" name="el" value="el" v-model="checkboxLegend" /> Legend
-        <input type="checkbox" class="qq1" name="el" value="el" v-model="checkboxAverageMetrics" /> Average Metrics
-      </div>
-      <br />
-    </div>
-    <Charts
-      v-if="vocabularies && classes && mmm === dsa[0]"
-      :classes="classes"
-      :vocabularies="vocabularies"
+    <Charts v-if="currentPageName === pageNames[0]" />
+    <Graphs v-else-if="currentPageName === pageNames[1]" />
+    <Diferences v-else-if="currentPageName === pageNames[2]" />
+    <RadarMetrics v-else-if="currentPageName === pageNames[3]" />
+    <LinksMetrics v-else-if="currentPageName === pageNames[4]" />
+    <MainSettings
+      class="mb-12 main_settings"
+      :currentPageID="pageNames.indexOf(currentPageName)"
+      @callError="error = arguments[0]"
+      @fetchClasses="fetchClasses"
+      @fetchVocabularies="fetchVocabularies"
     />
-    <Graphs v-if="vocabularies && classes && mmm === dsa[1]" :vocabularies="vocabularies" />
-    <Diferences v-if="vocabularies && classes && mmm === dsa[2]" :vocabularies="vocabularies" />
   </div>
 </template>
 
 <script>
-import Charts from "./components/Charts.vue";
-import Graphs from "./components/Graphs.vue";
-import Diferences from "./components/Diferences.vue";
-import axios from "axios";
-import VueSlider from "vue-slider-component";
-import "vue-slider-component/theme/antd.css";
+import Charts from "./components/pages/classes/Classes";
+import Graphs from "./components/pages/vocabularyMetrics/VocabularyMetricsContainer";
+import Diferences from "./components/pages/vocabularies/VocabulariesContainer";
+import RadarMetrics from "./components/pages/radarMetrics/RadarMetricsContainer";
+import MainSettings from "./components/common/chartsComponents/MainSettings";
+import LinksMetrics from "./components/pages/linksMetrics/LinksMetricsContainer";
 
 export default {
   name: "App",
-  data() {
-    return {
-      classes: null,
-      vocabularies: null,
-      dsa: ["class metrics", "vocabulary metrics", "vocabularies differences"],
-      mmm: null,
-      minVersion: 1,
-      error: "",
-      sliderBackground: 0,
-      sliderLine: 0,
-      checkboxLegend: true,
-      checkboxAverageMetrics: true,
-    };
-  },
   components: {
     Charts,
     Graphs,
     Diferences,
-    VueSlider
+    MainSettings,
+    RadarMetrics,
+    LinksMetrics
   },
-  beforeMount() {
-    this.mmm = this.dsa[0];
+  data() {
+    return {
+      pageNames: [
+        "class metrics",
+        "vocabulary metrics",
+        "vocabularies differences",
+        "metrics on radar chart",
+        "links metrics"
+      ],
+      currentPageName: null,
+      error: "",
+      isReady: false
+    };
+  },
+  watch: {
+    currentPageName(v) {
+      localStorage.setItem("currentPageName", v);
+    },
+    "$store.state.minVersion"(v) {
+      if (v !== undefined) localStorage.setItem("minVersion", v);
+    }
+  },
+  async beforeMount() {
+    this.setLocalsorage();
+    this.currentPageName =
+      localStorage.getItem("currentPageName") || this.pageNames[0];
+    const minVersion =
+      JSON.parse(localStorage.getItem("minVersion")) || undefined;
+    await this.fetchClasses(minVersion);
+    await this.fetchVocabularies(minVersion);
+    this.isReady = true;
   },
   mounted() {
     window.onscroll = () => {
       if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-        this.$store.dispatch("fetchGraphCount", this.$store.state.graphCount + 5)
+        this.$store.dispatch(
+          "fetchGraphCount",
+          this.$store.state.graphCount + 5
+        );
       }
     };
-    this.sliderLine = Math.ceil(
-      (parseInt(this.$store.state.transparency.line, 16) * 100) / 255
-    );
-    this.sliderBackground = Math.ceil(
-      (parseInt(this.$store.state.transparency.background, 16) * 100) / 255
-    );
-    axios.get("http://127.0.0.1:3001/classes").then(response => {
-      this.classes = response.data.classes;
-    });
-    axios.get("http://127.0.0.1:3001/vocabularies").then(response => {
-      this.vocabularies = response.data.vocabularies;
-    });
-  },
-  watch: {
-    sliderLine(v) {
-      clearTimeout(this.timer);
-      this.timer = setTimeout(() => {
-        const n = Math.ceil((v * 255) / 100).toString(16);
-        const n1 = Math.ceil((this.sliderBackground * 255) / 100).toString(16);
-        this.$store.dispatch("fetchTransparency", {
-          line: (n.length === 1 ? "0" : "") + n,
-          background: (n1.length === 1 ? "0" : "") + n1
-        });
-      }, 500);
-    },
-    sliderBackground(v) {
-      clearTimeout(this.timer);
-      this.timer = setTimeout(() => {
-        const n = Math.ceil((v * 255) / 100).toString(16);
-        const n1 = Math.ceil((this.sliderLine * 255) / 100).toString(16);
-        this.$store.dispatch("fetchTransparency", {
-          line: (n1.length === 1 ? "0" : "") + n1,
-          background: (n.length === 1 ? "0" : "") + n
-        });
-      }, 500);
-    },
-    checkboxLegend(v) {
-      this.$store.dispatch("fetchLegend",v)
-    },
-    checkboxAverageMetrics(v) {
-      this.$store.dispatch("fetchAverageMetrics",v)
-    },
   },
   methods: {
-    change(i) {
-      this.mmm = i;
-    },
-    confirmVersionNumber() {
-      const v = this.minVersion;
-      if (v === "" || v < 1) {
-        this.error = "Error of minimum number of versions value";
-        return;
+    setLocalsorage() {
+      if (localStorage.getItem(0 + "sliderLineWidth") === null) {
+        localStorage.setItem(0 + "sliderLineWidth", 5);
+        localStorage.setItem(0 + "sliderBackground", 25);
+        localStorage.setItem(0 + "sliderLine", 70);
+        
+        localStorage.setItem(1 + "sliderLineWidth", 15);
+        localStorage.setItem(1 + "sliderBackground", 25);
+        localStorage.setItem(1 + "sliderLine", 70);
+        
+        localStorage.setItem(2 + "sliderLineWidth", 5);
+        localStorage.setItem(2 + "sliderBackground", 25);
+        localStorage.setItem(2 + "sliderLine", 70);
+        
+        localStorage.setItem(3 + "sliderLineWidth", 0);
+        localStorage.setItem(3 + "sliderBackground", 12);
+        localStorage.setItem(3 + "sliderLine", 0);
+        
       }
-      this.error = "";
-      this.vocabularies = null;
-      this.classes = null;
-      axios
-        .get("http://127.0.0.1:3001/classes?version_number=" + this.minVersion)
-        .then(response => {
-          this.classes = response.data.classes;
-        });
-      axios
-        .get(
-          "http://127.0.0.1:3001/vocabularies?version_number=" + this.minVersion
-        )
-        .then(response => {
-          this.vocabularies = response.data.vocabularies;
-        });
+    },
+    changePage(page) {
+      this.currentPageName = page;
+    },
+    async fetchClasses(minVersion) {
+      await this.$store.dispatch("fetchClasses", minVersion);
+    },
+    async fetchVocabularies(minVersion) {
+      let currentPageName = this.currentPageName;
+      this.currentPageName = "";
+      await this.$store.dispatch("fetchVocabularies", minVersion);
+      this.$nextTick(() => {
+        this.currentPageName = currentPageName;
+      });
     }
   }
 };
 </script>
 
-<style>
+<style lang="scss">
+@import "assets/scss/global.scss";
+</style>
+<style scoped lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 12px;
+  margin-top: 32px;
 }
-.sfasa {
-  cursor: pointer;
+.nav {
+  &__page {
+    cursor: pointer;
+  }
 }
-input {
-  width: 40px;
-}
-.aaa {
-  margin-top: 12px;
-}
-.vslider__container {
-  width: 50%;
-  margin: auto;
-}
-.zxc1 {
+.error_message {
   background-color: darksalmon;
-  margin-bottom: 12px;
   padding: 8px;
 }
-input[type="checkbox"] {
-  transform: scale(1.5);
+.main_settings {
+  width: 50%;
+  margin: auto;
+  position: fixed;
+  top: 0;
+  transform: translateX(-50%);
+  left: 50%;
+  &__container {
+    width: 100%;
+    position: fixed;
+    top: 0;
+  }
 }
 </style>

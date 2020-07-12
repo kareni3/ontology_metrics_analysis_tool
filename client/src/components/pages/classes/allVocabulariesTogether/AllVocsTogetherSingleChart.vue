@@ -1,50 +1,29 @@
 <template>
-  <div class="chart">
-    <br>
-    <span class="title2">{{name}}</span>
+  <div>
+    <span class="title-2">{{name}}</span>
     <div>
-      <Bar v-if="datacollection" :chart-data="datacollection" :styles="myStyles" :options="options"></Bar>
+      <Bar v-if="datacollection" :chartData="datacollection" :styles="myStyles" :options="options"></Bar>
     </div>
   </div>
 </template>
 
 <script>
-import Bar from "./Bar.js";
+import Bar from "@/components/chartsJS/Bar.js";
 
 export default {
-  name: "Chart2",
-  data() {
-    return {
-      options: undefined
-    };
-  },
+  name: "AllVocabulariesTogetherChartContainer",
   components: {
     Bar
   },
-  methods: {
-    updateOptions() {
-      this.options = {
-        maintainAspectRatio: false,
-        scales: {
-          xAxes: [
-            {
-              gridLines: {
-                display: true
-              }
-            }
-          ],
-          yAxes: [
-            {
-              gridLines: {
-                display: true
-              },
-              ticks: {
-                min: 0
-              }
-            }
-          ]
-        }
-      };
+  data() {
+    return {
+      options: null
+    };
+  },
+  props: {
+    metrics: {},
+    name: {
+      default: "metric"
     }
   },
   computed: {
@@ -82,8 +61,7 @@ export default {
         dataset.push({
           label: vocName,
           data: [this.averageMetrics[i]],
-          backgroundColor:
-            "#000000" + this.fullnessPercentage[i],
+          backgroundColor: "#000000" + this.fullnessPercentage[i],
           borderColor: "#00000080",
           borderWidth: 1,
         });
@@ -97,34 +75,34 @@ export default {
       };
     }
   },
-  props: {
-    metrics: {},
-    name: {
-      default: "metric"
-    }
-  },
   mounted() {
     this.updateOptions();
-  }
+  },
+  methods: {
+    updateOptions() {
+      this.options = {
+        maintainAspectRatio: false,
+        scales: {
+          xAxes: [
+            {
+              gridLines: {
+                display: true
+              }
+            }
+          ],
+          yAxes: [
+            {
+              gridLines: {
+                display: true
+              },
+              ticks: {
+                min: 0
+              }
+            }
+          ]
+        }
+      };
+    }
+  },
 };
 </script>
-
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-.title2 {
-  font-size: 2em;
-}
-</style>

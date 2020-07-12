@@ -56,11 +56,13 @@ app.get('/vocabularies', async (req, res) => {
             SELECT name FROM vocabulary_metrics
             GROUP BY name
             HAVING count(*)>=${version_number}
-        )`;
+        )
+        order by vm.name, vm.version_name`;
     } else {
         query = `select * from vocabulary_metrics as vm
         inner join vocabulary_external_metrics as vem
-        on vm.name = vem.vocabulary_name`;
+        on vm.name = vem.vocabulary_name
+        order by vm.name, vm.version_name`;
     }
     client.query(query, (err, res1) => {
         if (err) {

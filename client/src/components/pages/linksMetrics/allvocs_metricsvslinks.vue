@@ -1,7 +1,7 @@
 <template>
   <div class="chart">
     <div>
-      <span class="asdds">{{namee}}</span>
+      <span class="asdds">{{name}}</span>
       <Linee
         v-if="datacollection"
         :chart-data="datacollection"
@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import Linee from "./Line.js";
+import Linee from "@/components/chartsJS/Line.js";
 
 export default {
   name: "Chart2",
@@ -49,22 +49,25 @@ export default {
   },
   watch: {
     radar() {
-      this.asd();
+      this.setDataset();
     },
     "$store.state.transparency"() {
-      this.asd();
+      this.setDataset();
     },
     "$store.state.legend"() {
       this.updateOptions();
-    }
+    },
+    "$store.state.minVersion"() {
+      this.setDataset();
+    },
   },
   props: {
     radar: {},
-    namee: {},
+    name: {},
   },
   mounted() {
     this.updateOptions();
-    this.asd();
+    this.setDataset();
   },
   methods: {
     updateOptions() {
@@ -99,7 +102,7 @@ export default {
         }
       };
     },
-    asd() {
+    setDataset() {
       this.datacollection = {
         datasets: [{
           data: this.radar,
