@@ -14,18 +14,17 @@
     </div>
     <div>
       <div v-for="(data, ind) in preparedData" :key="data[0]">
-        <span class="mr-12 pointer title-1 unselect" @click="prevDate">Prev</span>
-        <span class="mr-12 title-2">from 2000-01-01 to {{ currentDate }}</span>
-        <span class="pointer title-1 unselect" @click="nextDate">Next</span>
-        <div>
-          <span class="pointer title-1 unselect" @click="playAnimation">PLAY</span>
+        <div v-if="ind < $store.state.graphCount">
+          <div>
+            <span class="mr-12 pointer title-1 unselect green" @click="prevDate">Prev</span>
+            <span class="mr-12 title-2">from 2000-01-01 to {{ currentDate }}</span>
+            <span class="pointer title-1 unselect green" @click="nextDate">Next</span>
+          </div>
+          <div>
+            <span class="pointer title-1 unselect green" @click="playAnimation">PLAY</span>
+          </div>
+          <ScatterPoints :isLife="true" :data="data[1]" :name="data[0]" />
         </div>
-        <ScatterPoints
-          v-if="ind < $store.state.graphCount"
-          :isLife="true"
-          :data="data[1]"
-          :name="data[0]"
-        />
       </div>
     </div>
   </div>
@@ -81,7 +80,7 @@ export default {
         this.interval = setInterval(() => {
           this.currentDate = Object.keys(this.vocabularyList)[i];
           i++;
-          if ( i === Object.keys(this.vocabularyList).length ) {
+          if (i === Object.keys(this.vocabularyList).length) {
             clearInterval(this.interval);
             return;
           }
@@ -211,3 +210,11 @@ export default {
 };
 </script>
 
+<style scoped lang="scss">
+.green {
+  background-color: rgba(74, 255, 174, 0.3);
+  margin: 8px;
+  padding: 6px;
+  display: inline-block;
+}
+</style>
