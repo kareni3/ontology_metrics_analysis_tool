@@ -60,6 +60,12 @@ input[type="checkbox"] {
   font-size: 2rem;
 }
 
+.unselect {
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  user-select: none;
+}
+
 .btn {
   &__nav {
     height: 2.5rem;
@@ -75,7 +81,6 @@ input[type="checkbox"] {
     display: inline-block;
   }
 }
-
 
 .text {
   &__warn {
