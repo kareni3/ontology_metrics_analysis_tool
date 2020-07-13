@@ -60,6 +60,9 @@ export default {
     "$store.state.minVersion"() {
       this.setDataset();
     },
+    "$store.state.maxVersion"() {
+      this.setDataset();
+    },
   },
   props: {
     radar: {},
@@ -108,7 +111,7 @@ export default {
           data: this.radar,
           backgroundColor: "#f8797900",
           borderColor: "#f8797900",
-          pointBackgroundColor: "#f87979" + "c0",
+          pointBackgroundColor: "#f84545" + "c0",
           pointRadius: 4,
         }]
       };

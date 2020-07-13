@@ -21,20 +21,16 @@ client.connect();
 
 
 app.get('/classes', async (req, res) => {
-    const version_number = req.query.version_number
-    let query = ""
-    if (version_number){
-        query = `SELECT cl.* FROM "class" as cl
+    const min_version = req.query.min_version || 1
+    const max_version = req.query.max_version || 1000
+    let query = `SELECT cl.* FROM "class" as cl
         left join vocabulary_metrics as voc
         on voc.name = cl.vocabulary_name and voc.version = cl.vocabulary_version_number
         where voc.name in (
             SELECT name FROM vocabulary_metrics
             GROUP BY name
-            HAVING count(*)>=${version_number}
+            HAVING count(*)>=${min_version} and count(*)<=${max_version}
         )`;
-    } else {
-        query = `SELECT * FROM class`;
-    }
     client.query(query, (err, res1) => {
         if (err) {
             console.error(err);
@@ -46,24 +42,17 @@ app.get('/classes', async (req, res) => {
 
 
 app.get('/vocabularies', async (req, res) => {
-    const version_number = req.query.version_number
-    let query = ""
-    if (version_number){
-        query = `select * from vocabulary_metrics as vm
+    const min_version = req.query.min_version || 1
+    const max_version = req.query.max_version || 1000
+    let query = `select * from vocabulary_metrics as vm
         inner join vocabulary_external_metrics as vem
         on vm.name = vem.vocabulary_name
         where vm.name in (
             SELECT name FROM vocabulary_metrics
             GROUP BY name
-            HAVING count(*)>=${version_number}
+            HAVING count(*)>=${min_version} and count(*)<=${max_version}
         )
         order by vm.name, vm.version_name`;
-    } else {
-        query = `select * from vocabulary_metrics as vm
-        inner join vocabulary_external_metrics as vem
-        on vm.name = vem.vocabulary_name
-        order by vm.name, vm.version_name`;
-    }
     client.query(query, (err, res1) => {
         if (err) {
             console.error(err);

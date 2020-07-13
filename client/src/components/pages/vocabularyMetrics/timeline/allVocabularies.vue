@@ -19,7 +19,6 @@ export default {
   },
   watch: {
     data() {
-      console.log(123213213)
       this.prepareData();
     },
     log() {

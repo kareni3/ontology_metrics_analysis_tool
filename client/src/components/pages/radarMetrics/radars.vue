@@ -75,6 +75,9 @@ export default {
     "$store.state.minVersion"() {
       this.setDataset();
     },
+    "$store.state.maxVersion"() {
+      this.setDataset();
+    },
   },
   props: ["radar", "list"],
   mounted() {

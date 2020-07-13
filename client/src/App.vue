@@ -16,6 +16,7 @@
     <Diferences v-else-if="currentPageName === pageNames[2]" />
     <RadarMetrics v-else-if="currentPageName === pageNames[3]" />
     <LinksMetrics v-else-if="currentPageName === pageNames[4]" />
+    <VocabularyLife v-else-if="currentPageName === pageNames[5]" />
     <MainSettings
       class="mb-12 main_settings"
       :currentPageID="pageNames.indexOf(currentPageName)"
@@ -33,6 +34,7 @@ import Diferences from "./components/pages/vocabularies/VocabulariesContainer";
 import RadarMetrics from "./components/pages/radarMetrics/RadarMetricsContainer";
 import MainSettings from "./components/common/chartsComponents/MainSettings";
 import LinksMetrics from "./components/pages/linksMetrics/LinksMetricsContainer";
+import VocabularyLife from "./components/pages/vocabularyLife/VocabularyLifeContainer";
 
 export default {
   name: "App",
@@ -42,7 +44,8 @@ export default {
     Diferences,
     MainSettings,
     RadarMetrics,
-    LinksMetrics
+    LinksMetrics,
+    VocabularyLife
   },
   data() {
     return {
@@ -51,7 +54,8 @@ export default {
         "vocabulary metrics",
         "vocabularies differences",
         "metrics on radar chart",
-        "links metrics"
+        "links metrics",
+        "vocabulary life"
       ],
       currentPageName: null,
       error: "",
@@ -64,6 +68,9 @@ export default {
     },
     "$store.state.minVersion"(v) {
       if (v !== undefined) localStorage.setItem("minVersion", v);
+    },
+    "$store.state.maxVersion"(v) {
+      if (v !== undefined) localStorage.setItem("maxVersion", v);
     }
   },
   async beforeMount() {
@@ -72,8 +79,10 @@ export default {
       localStorage.getItem("currentPageName") || this.pageNames[0];
     const minVersion =
       JSON.parse(localStorage.getItem("minVersion")) || undefined;
-    await this.fetchClasses(minVersion);
-    await this.fetchVocabularies(minVersion);
+    const maxVersion =
+      JSON.parse(localStorage.getItem("maxVersion")) || undefined;
+    await this.fetchClasses(minVersion, maxVersion);
+    await this.fetchVocabularies(minVersion, maxVersion);
     this.isReady = true;
   },
   mounted() {
@@ -92,31 +101,30 @@ export default {
         localStorage.setItem(0 + "sliderLineWidth", 5);
         localStorage.setItem(0 + "sliderBackground", 25);
         localStorage.setItem(0 + "sliderLine", 70);
-        
+
         localStorage.setItem(1 + "sliderLineWidth", 15);
         localStorage.setItem(1 + "sliderBackground", 25);
         localStorage.setItem(1 + "sliderLine", 70);
-        
+
         localStorage.setItem(2 + "sliderLineWidth", 5);
         localStorage.setItem(2 + "sliderBackground", 25);
         localStorage.setItem(2 + "sliderLine", 70);
-        
+
         localStorage.setItem(3 + "sliderLineWidth", 0);
         localStorage.setItem(3 + "sliderBackground", 12);
         localStorage.setItem(3 + "sliderLine", 0);
-        
       }
     },
     changePage(page) {
       this.currentPageName = page;
     },
-    async fetchClasses(minVersion) {
-      await this.$store.dispatch("fetchClasses", minVersion);
+    async fetchClasses(minVersion, maxVersion) {
+      await this.$store.dispatch("fetchClasses", {minVersion, maxVersion});
     },
-    async fetchVocabularies(minVersion) {
+    async fetchVocabularies(minVersion, maxVersion) {
       let currentPageName = this.currentPageName;
       this.currentPageName = "";
-      await this.$store.dispatch("fetchVocabularies", minVersion);
+      await this.$store.dispatch("fetchVocabularies", {minVersion, maxVersion});
       this.$nextTick(() => {
         this.currentPageName = currentPageName;
       });
@@ -147,7 +155,7 @@ export default {
   padding: 8px;
 }
 .main_settings {
-  width: 50%;
+  width: 60%;
   margin: auto;
   position: fixed;
   top: 0;

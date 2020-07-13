@@ -3,14 +3,23 @@
     <div class="hide_btn" @click="isHidden=!isHidden">{{ isHidden ? "show settings ∨" : "hide ∧"}}</div>
     <div class="main_settings__content" v-show="!isHidden">
       <div class="mb-12">
-        <span class="mr-12">Minimum number of versions</span>
+        <span class="mr-12">Min number of versions</span>
         <input
           class="mr-12"
           type="number"
           v-model="minVersion"
           @keypress.enter="confirmVersionNumber"
         />
-        <button @click="confirmVersionNumber">Confirm</button>
+        <span class="mr-12">Max number of versions</span>
+        <input
+          class="mr-12"
+          type="number"
+          v-model="maxVersion"
+          @keypress.enter="confirmVersionNumber"
+        />
+      </div>
+      <div class="mb-12">
+        <button @click="confirmVersionNumber">Confirm Number of Versions</button>
       </div>
       <div>
         <div class="vslider__container mb-12">
@@ -46,6 +55,7 @@ export default {
   data() {
     return {
       minVersion: 1,
+      maxVersion: 1000,
       sliderBackground: 0,
       sliderLine: 0,
       sliderLineWidth: 30,
@@ -106,6 +116,7 @@ export default {
   },
   mounted() {
     this.minVersion = this.$store.state.minVersion;
+    this.maxVersion = this.$store.state.maxVersion;
     this.calc();
   },
   methods: {
@@ -143,9 +154,13 @@ export default {
         this.$emit("callError", "Error of minimum number of versions value");
         return;
       }
+      if (this.minVersion > this.maxVersion) {
+        this.$emit("callError", "Max >= Min. Think about it");
+        return;
+      }
       this.$emit("callError", "");
-      this.$emit("fetchClasses", this.minVersion);
-      this.$emit("fetchVocabularies", this.minVersion);
+      this.$emit("fetchClasses", this.minVersion, this.maxVersion);
+      this.$emit("fetchVocabularies", this.minVersion, this.maxVersion);
     }
   }
 };
@@ -161,6 +176,8 @@ input {
     border: 1px solid dodgerblue;
     border-radius: 4px;
     padding: 12px;
+    max-height: 250px;
+    overflow: auto;
   }
 }
 </style>

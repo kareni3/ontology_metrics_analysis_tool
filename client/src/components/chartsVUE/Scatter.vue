@@ -43,6 +43,9 @@ export default {
     "$store.state.minVersion"() {
       this.setDataset();
     },
+    "$store.state.maxVersion"() {
+      this.setDataset();
+    },
     derivativeFunction() {
       this.setDataset();
     }
