@@ -36,6 +36,9 @@ export default {
     };
   },
   watch: {
+    enabledVocabularyNames() {
+      this.setMetricList();
+    },
     preparedDataList() {
       this.isTimeout = false;
       setTimeout(() => {
@@ -49,12 +52,6 @@ export default {
       Object.entries(this.metricList).forEach(metric => {
         if (this.enabledVocabularyMetricNames.includes(metric[0])) {
           metricList[metric[0]] = metric[1];
-          metricList[metric[0]].Y.filter((y, i) =>
-            this.enabledVocabularyNames.includes(metricList[metric[0]].X[i])
-          );
-          metricList[metric[0]].X.filter(x =>
-            this.enabledVocabularyNames.includes(x)
-          );
         }
       });
       return metricList;
@@ -81,6 +78,7 @@ export default {
       this.$store.state.vocabularies.forEach(vocabulary => {
         Object.entries(vocabulary).forEach(metric => {
           if (!VOCABULARY_SPECIAL_COLUMNS.includes(metric[0])) {
+            if (!this.enabledVocabularyNames.includes(vocabulary.name)) return
             let index = this.metricList[metric[0]].X.indexOf(vocabulary.name);
             if (index === -1) {
               this.metricList[metric[0]].X.push(vocabulary.name);
