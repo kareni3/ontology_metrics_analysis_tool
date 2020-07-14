@@ -75,7 +75,10 @@
           />
         </div>
         <div class="mb-12">
-          <span class="mr-12 pl-57" title="All vocabularies existed before Min and after Max are not displayed">Years of Life* |</span>
+          <span
+            class="mr-12 pl-57"
+            title="All vocabularies existed before Min and after Max are not displayed"
+          >Years of Life* |</span>
           <span class="mr-12">Min</span>
           <input
             class="mr-12 years"
@@ -98,6 +101,9 @@
         </div>
         <div @click="pasteFromClipboard" class="btn_paste">
           <span>Paste from Clipboard</span>
+        </div>
+        <div @click="returnToDefault" class="btn_return">
+          <span>Return to Default Settings</span>
         </div>
       </div>
     </div>
@@ -133,8 +139,8 @@ export default {
         max: 1000
       },
       yearsOfLife: {
-        min: '1970-01-01',
-        max: '2030-01-01'
+        min: "1970-01-01",
+        max: "2030-01-01"
       }
     };
   },
@@ -193,10 +199,14 @@ export default {
     this.maxVersion = this.$store.state.maxVersion;
     this.incomingLinks = this.$store.state.incomingLinks;
     this.outgoingLinks = this.$store.state.outgoingLinks;
-    this.yearsOfLife = this.$store.state.yearsOfLife ;
+    this.yearsOfLife = this.$store.state.yearsOfLife;
     this.calc();
   },
   methods: {
+    returnToDefault() {
+      localStorage.clear();
+      document.location.reload(true);
+    },
     copyToClipboard() {
       this.copied = true;
       setTimeout(() => {
@@ -275,7 +285,7 @@ export default {
         this.maxVersion,
         this.incomingLinks,
         this.outgoingLinks,
-        this.yearsOfLife,
+        this.yearsOfLife
       );
       this.$emit(
         "fetchVocabularies",
@@ -283,7 +293,7 @@ export default {
         this.maxVersion,
         this.incomingLinks,
         this.outgoingLinks,
-        this.yearsOfLife,
+        this.yearsOfLife
       );
     }
   }
@@ -329,10 +339,22 @@ button {
   margin-top: 8px;
   margin-bottom: 12px;
   margin-left: 12px;
+  margin-right: 12px;
+  cursor: pointer;
+}
+.btn_return {
+  background-color: rgba(255, 92, 92, 0.5);
+  display: inline-block;
+  padding: 12px;
+  margin-top: 8px;
+  margin-bottom: 12px;
+  margin-left: 12px;
   cursor: pointer;
 }
 hr {
-  border-color: #00000020;
+  border: none;
+  background-color: #00000040;
+  height: 1px;
 }
 .pl-15 {
   padding-left: 16px;
