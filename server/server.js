@@ -42,10 +42,7 @@ app.get('/classes', async (req, res) => {
 		select name from vocabulary_metrics
 		where version_name<'${years_of_life.min}'
 		GROUP BY name) 
-		and vm.name not in (
-		select name from vocabulary_metrics
-		where version_name>'${years_of_life.max}'
-		GROUP BY name)
+		and vm.version_name<'${years_of_life.max}'
         order by vm.name, vm.version_name`;
     client.query(query, (err, res1) => {
         if (err) {
@@ -77,10 +74,7 @@ app.get('/vocabularies', async (req, res) => {
 		select name from vocabulary_metrics
 		where version_name<'${years_of_life.min}'
 		GROUP BY name) 
-		and vm.name not in (
-		select name from vocabulary_metrics
-		where version_name>'${years_of_life.max}'
-		GROUP BY name)
+		and vm.version_name<'${years_of_life.max}'
         order by vm.name, vm.version_name`;
     client.query(query, (err, res1) => {
         if (err) {

@@ -77,7 +77,7 @@
         <div class="mb-12">
           <span
             class="mr-12 pl-57"
-            title="All vocabularies existed before Min and after Max are not displayed"
+            title="All vocabularies born before Min and after Max year are not displayed"
           >Years of Life* |</span>
           <span class="mr-12">Min</span>
           <input
@@ -276,6 +276,10 @@ export default {
       }
       if (this.yearsOfLife.min > this.yearsOfLife.max) {
         this.$emit("callError", "Max >= Min. Think about it");
+        return;
+      }
+      if (this.yearsOfLife.min.length !== 10 || this.yearsOfLife.max.length !== 10) {
+        this.$emit("callError", "Mistake in Years of Life");
         return;
       }
       this.$emit("callError", "");

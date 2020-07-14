@@ -1,7 +1,8 @@
 <template>
   <div id="app" v-if="isReady">
     <div class="error_message" v-if="error">
-      <span>{{error}}</span>
+      Error: <span>{{error}}</span>
+      <button @click="error=''">OK</button>
     </div>
     <div class="nav mb-12">
       <span
@@ -171,7 +172,19 @@ export default {
 }
 .error_message {
   background-color: darksalmon;
-  padding: 8px;
+  padding: 24px;
+  width: 100%;
+  font-size: 24px;
+  position: fixed;
+  z-index: 100000;
+  top: 0;
+  transform: translateX(-50%);
+  left: 50%;
+  button {
+    margin-left: 12px;
+    vertical-align: middle;
+    padding: 4px 12px;
+  }
 }
 .main_settings {
   width: 60%;
