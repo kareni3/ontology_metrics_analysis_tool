@@ -23,14 +23,21 @@ client.connect();
 app.get('/classes', async (req, res) => {
     const min_version = req.query.min_version || 1
     const max_version = req.query.max_version || 1000
+    const incoming_links = req.query.incoming_links ? JSON.parse(req.query.incoming_links) : {min: 0, max: 100000}
+    const outgoing_links = req.query.outgoing_links ? JSON.parse(req.query.outgoing_links) : {min: 0, max: 100000}
     let query = `SELECT cl.* FROM "class" as cl
-        left join vocabulary_metrics as voc
-        on voc.name = cl.vocabulary_name and voc.version = cl.vocabulary_version_number
-        where voc.name in (
+        left join vocabulary_metrics as vm
+        on vm.name = cl.vocabulary_name and vm.version = cl.vocabulary_version_number
+        inner join vocabulary_external_metrics as vem
+        on vm.name = vem.vocabulary_name
+        where vm.name in (
             SELECT name FROM vocabulary_metrics
             GROUP BY name
             HAVING count(*)>=${min_version} and count(*)<=${max_version}
-        )`;
+        )
+        and vem.incoming_links>=${incoming_links.min} and vem.incoming_links<=${incoming_links.max}
+        and vem.incoming_links>=${outgoing_links.min} and vem.incoming_links<=${outgoing_links.max}
+        order by vm.name, vm.version_name`;
     client.query(query, (err, res1) => {
         if (err) {
             console.error(err);
@@ -43,7 +50,9 @@ app.get('/classes', async (req, res) => {
 
 app.get('/vocabularies', async (req, res) => {
     const min_version = req.query.min_version || 1
-    const max_version = req.query.max_version || 1000
+    const max_version = req.query.max_version || 10000
+    const incoming_links = req.query.incoming_links ? JSON.parse(req.query.incoming_links) : {min: 0, max: 100000}
+    const outgoing_links = req.query.outgoing_links ? JSON.parse(req.query.outgoing_links) : {min: 0, max: 100000}
     let query = `select * from vocabulary_metrics as vm
         inner join vocabulary_external_metrics as vem
         on vm.name = vem.vocabulary_name
@@ -51,7 +60,9 @@ app.get('/vocabularies', async (req, res) => {
             SELECT name FROM vocabulary_metrics
             GROUP BY name
             HAVING count(*)>=${min_version} and count(*)<=${max_version}
-        )
+        ) 
+        and vem.incoming_links>=${incoming_links.min} and vem.incoming_links<=${incoming_links.max}
+        and vem.incoming_links>=${outgoing_links.min} and vem.incoming_links<=${outgoing_links.max}
         order by vm.name, vm.version_name`;
     client.query(query, (err, res1) => {
         if (err) {

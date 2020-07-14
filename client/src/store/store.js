@@ -13,6 +13,14 @@ const store = new Vuex.Store({
     vocabularyNames: [],
     minVersion: 1,
     maxVersion: 100,
+    incomingLinks: {
+      min: 0,
+      max: 1000,
+    },
+    outgoingLinks: {
+      min: 0,
+      max: 1000,
+    },
     vocabularyMetricNames: [],
     transparency: {
         background: '07',
@@ -57,6 +65,12 @@ const store = new Vuex.Store({
     fetchMaxVersion(state, maxVersion) {
       state.maxVersion = maxVersion;
     },
+    fetchIncomingLinks(state, incomingLinks) {
+      state.incomingLinks = Object.assign({}, state.incomingLinks, incomingLinks)
+    },
+    fetchOutgoingLinks(state, outgoingLinks) {
+      state.outgoingLinks = Object.assign({}, state.outgoingLinks, outgoingLinks)
+    },
     fetchLineWidth(state, width) {
       state.lineWidth = width;
     },
@@ -78,7 +92,7 @@ const store = new Vuex.Store({
       commit('fetchLineWidth', width);
     },
     async fetchClasses({ commit }, data) {
-      const res = await mainApi.getClasses(data.minVersion, data.maxVersion);
+      const res = await mainApi.getClasses(data.minVersion, data.maxVersion, data.incomingLinks, data.outgoingLinks);
       const classMetricNames = [];
       if (res.classes[0]) Object.keys(res.classes[0]).forEach(metricName => {
         if (CLASS_SPECIAL_COLUMNS.includes(metricName)) return;
@@ -86,22 +100,26 @@ const store = new Vuex.Store({
       })
       if (data.minVersion) commit('fetchMinVersion', data.minVersion);
       if (data.maxVersion) commit('fetchMaxVersion', data.maxVersion);
+      if (data.incomingLinks) commit('fetchIncomingLinks', data.incomingLinks);
+      if (data.outgoingLinks) commit('fetchOutgoingLinks', data.outgoingLinks);
       commit('fetchClasses', res.classes);
       commit('fetchClassMetricNames', classMetricNames);
     },
     async fetchVocabularies({ commit }, data) {
-      const res = await mainApi.getVocabularies(data.minVersion, data.maxVersion);
+      const res = await mainApi.getVocabularies(data.minVersion, data.maxVersion, data.incomingLinks, data.outgoingLinks);
       const vocabularyNames = []
       if (res.vocabularies[0]) res.vocabularies.forEach(vocabulary => {
         if (!vocabularyNames.includes(vocabulary.name)) vocabularyNames.push(vocabulary.name);
       })
       const vocabularyMetricNames = [];
-      Object.keys(res.vocabularies[0]).forEach(metricName => {
+      if (res.vocabularies[0]) Object.keys(res.vocabularies[0]).forEach(metricName => {
         if (VOCABULARY_SPECIAL_COLUMNS.includes(metricName)) return;
         vocabularyMetricNames.push(metricName)
       })
       if (data.minVersion) commit('fetchMinVersion', data.minVersion);
       if (data.maxVersion) commit('fetchMaxVersion', data.maxVersion);
+      if (data.incomingLinks) commit('fetchIncomingLinks', data.incomingLinks);
+      if (data.outgoingLinks) commit('fetchOutgoingLinks', data.outgoingLinks);
       commit('fetchVocabularies', res.vocabularies);
       commit('fetchVocabularyNames', vocabularyNames);
       commit('fetchVocabularyMetricNames', vocabularyMetricNames);

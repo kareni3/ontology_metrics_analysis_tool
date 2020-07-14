@@ -75,7 +75,13 @@ export default {
     },
     "$store.state.maxVersion"(v) {
       if (v !== undefined) localStorage.setItem("maxVersion", v);
-    }
+    },
+    "$store.state.incomingLinks"(v) {
+      if (v !== undefined) localStorage.setItem("incomingLinks", JSON.stringify(v));
+    },
+    "$store.state.outgoingLinks"(v) {
+      if (v !== undefined) localStorage.setItem("outgoingLinks", JSON.stringify(v));
+    },
   },
   async beforeMount() {
     this.setLocalsorage();
@@ -85,8 +91,12 @@ export default {
       JSON.parse(localStorage.getItem("minVersion")) || undefined;
     const maxVersion =
       JSON.parse(localStorage.getItem("maxVersion")) || undefined;
-    await this.fetchClasses(minVersion, maxVersion);
-    await this.fetchVocabularies(minVersion, maxVersion);
+    const incomingLinks =
+      JSON.parse(localStorage.getItem("incomingLinks")) || undefined;
+    const outgoingLinks =
+      JSON.parse(localStorage.getItem("outgoingLinks")) || undefined;
+    await this.fetchClasses(minVersion, maxVersion, incomingLinks, outgoingLinks);
+    await this.fetchVocabularies(minVersion, maxVersion, incomingLinks, outgoingLinks);
     this.isReady = true;
   },
   mounted() {
@@ -122,13 +132,13 @@ export default {
     changePage(page) {
       this.currentPageName = page;
     },
-    async fetchClasses(minVersion, maxVersion) {
-      await this.$store.dispatch("fetchClasses", {minVersion, maxVersion});
+    async fetchClasses(minVersion, maxVersion, incomingLinks, outgoingLinks) {
+      await this.$store.dispatch("fetchClasses", {minVersion, maxVersion, incomingLinks, outgoingLinks});
     },
-    async fetchVocabularies(minVersion, maxVersion) {
+    async fetchVocabularies(minVersion, maxVersion, incomingLinks, outgoingLinks) {
       let currentPageName = this.currentPageName;
       this.currentPageName = "";
-      await this.$store.dispatch("fetchVocabularies", {minVersion, maxVersion});
+      await this.$store.dispatch("fetchVocabularies", {minVersion, maxVersion, incomingLinks, outgoingLinks});
       this.$nextTick(() => {
         this.currentPageName = currentPageName;
       });

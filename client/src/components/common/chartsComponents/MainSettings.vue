@@ -2,26 +2,8 @@
   <div class="main_settings">
     <div class="hide_btn" @click="isHidden=!isHidden">{{ isHidden ? "show settings ∨" : "hide ∧"}}</div>
     <div class="main_settings__content" v-show="!isHidden">
-      <div class="mb-12">
-        <span class="mr-12">Min number of versions</span>
-        <input
-          class="mr-12"
-          type="number"
-          v-model="minVersion"
-          @keypress.enter="confirmVersionNumber"
-        />
-        <span class="mr-12">Max number of versions</span>
-        <input
-          class="mr-12"
-          type="number"
-          v-model="maxVersion"
-          @keypress.enter="confirmVersionNumber"
-        />
-      </div>
-      <div class="mb-12">
-        <button @click="confirmVersionNumber">Confirm Number of Versions</button>
-      </div>
       <div>
+        <div class="mb-12"><span class="title-1">Settings</span></div>
         <div class="vslider__container mb-12">
           <span>Background transparency</span>
           <vue-slider class="vslider" v-model="sliderBackground" />
@@ -34,9 +16,71 @@
           <span>Line width</span>
           <vue-slider class="vslider" v-model="sliderLineWidth" />
         </div>
-        <div class="main_settings__checkboxes">
+        <div class="main_settings__checkboxes mb-12">
           <input type="checkbox" v-model="checkboxLegend" /> Legend
           <input type="checkbox" v-model="checkboxChartMetrics" /> Average Metrics
+        </div>
+        <hr class="mb-12"/>
+        <div class="mb-12">
+          <span class="mr-12">Versions Number |</span>
+          <span class="mr-12">Min</span>
+          <input
+            class="mr-12"
+            type="number"
+            v-model="minVersion"
+            @keypress.enter="confirmVersionNumber"
+          />
+          <span class="mr-12">Max</span>
+          <input
+            class="mr-12"
+            type="number"
+            v-model="maxVersion"
+            @keypress.enter="confirmVersionNumber"
+          />
+        </div>
+        <div class="mb-12">
+          <span class="mr-12 pl-15">Incoming Links |</span>
+          <span class="mr-12">Min</span>
+          <input
+            class="mr-12"
+            type="number"
+            v-model="incomingLinks.min"
+            @keypress.enter="confirmVersionNumber"
+          />
+          <span class="mr-12">Max</span>
+          <input
+            class="mr-12"
+            type="number"
+            v-model="incomingLinks.max"
+            @keypress.enter="confirmVersionNumber"
+          />
+        </div>
+        <div class="mb-12">
+          <span class="mr-12 pl-15">Outgoing Links |</span>
+          <span class="mr-12">Min</span>
+          <input
+            class="mr-12"
+            type="number"
+            v-model="outgoingLinks.min"
+            @keypress.enter="confirmVersionNumber"
+          />
+          <span class="mr-12">Max</span>
+          <input
+            class="mr-12"
+            type="number"
+            v-model="outgoingLinks.max"
+            @keypress.enter="confirmVersionNumber"
+          />
+        </div>
+        <div class="mb-12">
+          <button @click="confirmVersionNumber">Confirm</button>
+        </div>
+        <hr class="mb-12"/>
+        <div @click="copyToClipboard" class="btn_copy" :class="copied && 'btn_copy--copied'">
+          <span>{{ copied ? "Copied" : "Copy All to Clipboard" }}</span>
+        </div>
+        <div @click="pasteFromClipboard" class="btn_paste">
+          <span>Paste from Clipboard</span>
         </div>
       </div>
     </div>
@@ -61,7 +105,16 @@ export default {
       sliderLineWidth: 30,
       checkboxLegend: true,
       checkboxChartMetrics: true,
-      isHidden: true
+      isHidden: true,
+      copied: false,
+      incomingLinks: {
+        min: 0,
+        max: 1000,
+      },
+      outgoingLinks: {
+        min: 0,
+        max: 1000,
+      },
     };
   },
   props: ["currentPageID"],
@@ -117,9 +170,32 @@ export default {
   mounted() {
     this.minVersion = this.$store.state.minVersion;
     this.maxVersion = this.$store.state.maxVersion;
+    this.incomingLinks = this.$store.state.incomingLinks;
+    this.outgoingLinks = this.$store.state.outgoingLinks;
     this.calc();
   },
   methods: {
+    copyToClipboard() {
+      this.copied = true;
+      setTimeout(() => {
+        this.copied = false;
+      }, 1500);
+
+      const localStor = {};
+      Object.entries(localStorage).forEach(item => {
+        localStor[item[0]] = item[1];
+      });
+
+      this.$clipboard(JSON.stringify(localStor, null, 2));
+    },
+    pasteFromClipboard() {
+      navigator.clipboard.readText().then(data => {
+        Object.entries(JSON.parse(data)).forEach(item => {
+          localStorage.setItem(item[0], item[1]);
+        });
+        document.location.reload(true);
+      });
+    },
     calc() {
       if (localStorage.getItem(this.currentPageID + "sliderLineWidth") !== null)
         this.sliderLineWidth = JSON.parse(
@@ -158,9 +234,17 @@ export default {
         this.$emit("callError", "Max >= Min. Think about it");
         return;
       }
+      if (this.incomingLinks.min > this.incomingLinks.max) {
+        this.$emit("callError", "Max >= Min. Think about it");
+        return;
+      }
+      if (this.outgoingLinks.min > this.outgoingLinks.max) {
+        this.$emit("callError", "Max >= Min. Think about it");
+        return;
+      }
       this.$emit("callError", "");
-      this.$emit("fetchClasses", this.minVersion, this.maxVersion);
-      this.$emit("fetchVocabularies", this.minVersion, this.maxVersion);
+      this.$emit("fetchClasses", this.minVersion, this.maxVersion, this.incomingLinks, this.outgoingLinks);
+      this.$emit("fetchVocabularies", this.minVersion, this.maxVersion, this.incomingLinks, this.outgoingLinks);
     }
   }
 };
@@ -168,7 +252,10 @@ export default {
 
 <style scoped type="scss" lang="scss">
 input {
-  width: 40px;
+  width: 55px;
+}
+button {
+  padding: 6px 12px;  
 }
 .main_settings {
   &__content {
@@ -179,5 +266,32 @@ input {
     max-height: 250px;
     overflow: auto;
   }
+}
+.btn_copy {
+  background-color: rgba(92, 214, 255, 0.5);
+  display: inline-block;
+  padding: 12px;
+  margin-top: 8px;
+  margin-bottom: 12px;
+  margin-right: 12px;
+  cursor: pointer;
+  &--copied {
+    background-color: rgba(128, 255, 156, 0.5);
+  }
+}
+.btn_paste {
+  background-color: rgba(255, 179, 92, 0.5);
+  display: inline-block;
+  padding: 12px;
+  margin-top: 8px;
+  margin-bottom: 12px;
+  margin-left: 12px;
+  cursor: pointer;
+}
+hr {
+  border-color: #00000020
+}
+.pl-15 {
+  padding-left: 16px;
 }
 </style>

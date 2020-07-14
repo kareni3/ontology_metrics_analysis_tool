@@ -78,6 +78,12 @@ export default {
     "$store.state.maxVersion"() {
       this.setDataset();
     },
+    "$store.state.incomingLinks"() {
+      this.setDataset();
+    },
+    "$store.state.outgoingLinks"() {
+      this.setDataset();
+    },
   },
   props: ["radar", "list"],
   mounted() {
