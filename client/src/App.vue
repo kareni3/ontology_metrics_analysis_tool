@@ -19,6 +19,7 @@
     <LinksMetrics v-else-if="currentPageName === pageNames[4]" />
     <VocabularyLife v-else-if="currentPageName === pageNames[5]" />
     <VocabularyThroughTime v-else-if="currentPageName === pageNames[6]" />
+    <MetricsDependency v-else-if="currentPageName === pageNames[7]" />
     <MainSettings
       class="mb-12 main_settings"
       :currentPageID="pageNames.indexOf(currentPageName)"
@@ -38,6 +39,7 @@ import MainSettings from "./components/common/chartsComponents/MainSettings";
 import LinksMetrics from "./components/pages/linksMetrics/LinksMetricsContainer";
 import VocabularyLife from "./components/pages/vocabularyLife/VocabularyLifeContainer";
 import VocabularyThroughTime from "./components/pages/vocabularyThroughTime/VocabularyThroughTimeContainer";
+import MetricsDependency from "./components/pages/metricsDependency/MetricsDependencyContainer";
 
 export default {
   name: "App",
@@ -49,7 +51,8 @@ export default {
     RadarMetrics,
     LinksMetrics,
     VocabularyLife,
-    VocabularyThroughTime
+    VocabularyThroughTime,
+    MetricsDependency
   },
   data() {
     return {
@@ -60,7 +63,8 @@ export default {
         "metrics on radar chart",
         "links metrics",
         "vocabulary life",
-        "through time"
+        "through time",
+        "dependency between metrics",
       ],
       currentPageName: null,
       error: "",
