@@ -69,6 +69,9 @@ export default {
     "$store.state.outgoingLinks"() {
       this.setDataset();
     },
+    "$store.state.yearsOfLife"() {
+      this.setDataset();
+    },
   },
   props: {
     radar: {},

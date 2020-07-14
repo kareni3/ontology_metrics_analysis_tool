@@ -82,6 +82,9 @@ export default {
     "$store.state.outgoingLinks"(v) {
       if (v !== undefined) localStorage.setItem("outgoingLinks", JSON.stringify(v));
     },
+    "$store.state.yearsOfLife"(v) {
+      if (v !== undefined) localStorage.setItem("yearsOfLife", JSON.stringify(v));
+    },
   },
   async beforeMount() {
     this.setLocalsorage();
@@ -95,8 +98,10 @@ export default {
       JSON.parse(localStorage.getItem("incomingLinks")) || undefined;
     const outgoingLinks =
       JSON.parse(localStorage.getItem("outgoingLinks")) || undefined;
-    await this.fetchClasses(minVersion, maxVersion, incomingLinks, outgoingLinks);
-    await this.fetchVocabularies(minVersion, maxVersion, incomingLinks, outgoingLinks);
+    const yearsOfLife =
+      JSON.parse(localStorage.getItem("yearsOfLife")) || undefined;
+    await this.fetchClasses(minVersion, maxVersion, incomingLinks, outgoingLinks, yearsOfLife);
+    await this.fetchVocabularies(minVersion, maxVersion, incomingLinks, outgoingLinks, yearsOfLife);
     this.isReady = true;
   },
   mounted() {
@@ -132,13 +137,13 @@ export default {
     changePage(page) {
       this.currentPageName = page;
     },
-    async fetchClasses(minVersion, maxVersion, incomingLinks, outgoingLinks) {
-      await this.$store.dispatch("fetchClasses", {minVersion, maxVersion, incomingLinks, outgoingLinks});
+    async fetchClasses(minVersion, maxVersion, incomingLinks, outgoingLinks, yearsOfLife) {
+      await this.$store.dispatch("fetchClasses", {minVersion, maxVersion, incomingLinks, outgoingLinks, yearsOfLife});
     },
-    async fetchVocabularies(minVersion, maxVersion, incomingLinks, outgoingLinks) {
+    async fetchVocabularies(minVersion, maxVersion, incomingLinks, outgoingLinks, yearsOfLife) {
       let currentPageName = this.currentPageName;
       this.currentPageName = "";
-      await this.$store.dispatch("fetchVocabularies", {minVersion, maxVersion, incomingLinks, outgoingLinks});
+      await this.$store.dispatch("fetchVocabularies", {minVersion, maxVersion, incomingLinks, outgoingLinks, yearsOfLife});
       this.$nextTick(() => {
         this.currentPageName = currentPageName;
       });

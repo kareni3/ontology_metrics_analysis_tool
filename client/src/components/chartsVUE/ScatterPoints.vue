@@ -58,6 +58,9 @@ export default {
     "$store.state.outgoingLinks"() {
       this.setDataset();
     },
+    "$store.state.yearsOfLife"() {
+      this.setDataset();
+    },
     derivativeFunction() {
       this.setDataset();
     }

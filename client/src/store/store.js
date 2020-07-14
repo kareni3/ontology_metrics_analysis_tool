@@ -21,6 +21,10 @@ const store = new Vuex.Store({
       min: 0,
       max: 1000,
     },
+    yearsOfLife: {
+      min: '1970-01-01',
+      max: '2030-01-01',
+    },
     vocabularyMetricNames: [],
     transparency: {
         background: '07',
@@ -71,6 +75,9 @@ const store = new Vuex.Store({
     fetchOutgoingLinks(state, outgoingLinks) {
       state.outgoingLinks = Object.assign({}, state.outgoingLinks, outgoingLinks)
     },
+    fetchYearsOfLife(state, yearsOfLife) {
+      state.yearsOfLife = Object.assign({}, state.yearsOfLife, yearsOfLife)
+    },
     fetchLineWidth(state, width) {
       state.lineWidth = width;
     },
@@ -92,7 +99,7 @@ const store = new Vuex.Store({
       commit('fetchLineWidth', width);
     },
     async fetchClasses({ commit }, data) {
-      const res = await mainApi.getClasses(data.minVersion, data.maxVersion, data.incomingLinks, data.outgoingLinks);
+      const res = await mainApi.getClasses(data.minVersion, data.maxVersion, data.incomingLinks, data.outgoingLinks, data.yearsOfLife);
       const classMetricNames = [];
       if (res.classes[0]) Object.keys(res.classes[0]).forEach(metricName => {
         if (CLASS_SPECIAL_COLUMNS.includes(metricName)) return;
@@ -102,11 +109,12 @@ const store = new Vuex.Store({
       if (data.maxVersion) commit('fetchMaxVersion', data.maxVersion);
       if (data.incomingLinks) commit('fetchIncomingLinks', data.incomingLinks);
       if (data.outgoingLinks) commit('fetchOutgoingLinks', data.outgoingLinks);
+      if (data.yearsOfLife) commit('fetchYearsOfLife', data.yearsOfLife);
       commit('fetchClasses', res.classes);
       commit('fetchClassMetricNames', classMetricNames);
     },
     async fetchVocabularies({ commit }, data) {
-      const res = await mainApi.getVocabularies(data.minVersion, data.maxVersion, data.incomingLinks, data.outgoingLinks);
+      const res = await mainApi.getVocabularies(data.minVersion, data.maxVersion, data.incomingLinks, data.outgoingLinks, data.yearsOfLife);
       const vocabularyNames = []
       if (res.vocabularies[0]) res.vocabularies.forEach(vocabulary => {
         if (!vocabularyNames.includes(vocabulary.name)) vocabularyNames.push(vocabulary.name);
@@ -120,6 +128,7 @@ const store = new Vuex.Store({
       if (data.maxVersion) commit('fetchMaxVersion', data.maxVersion);
       if (data.incomingLinks) commit('fetchIncomingLinks', data.incomingLinks);
       if (data.outgoingLinks) commit('fetchOutgoingLinks', data.outgoingLinks);
+      if (data.yearsOfLife) commit('fetchYearsOfLife', data.yearsOfLife);
       commit('fetchVocabularies', res.vocabularies);
       commit('fetchVocabularyNames', vocabularyNames);
       commit('fetchVocabularyMetricNames', vocabularyMetricNames);

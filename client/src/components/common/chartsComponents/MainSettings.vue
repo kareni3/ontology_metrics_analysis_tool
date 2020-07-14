@@ -3,7 +3,9 @@
     <div class="hide_btn" @click="isHidden=!isHidden">{{ isHidden ? "show settings ∨" : "hide ∧"}}</div>
     <div class="main_settings__content" v-show="!isHidden">
       <div>
-        <div class="mb-12"><span class="title-1">Settings</span></div>
+        <div class="mb-12">
+          <span class="title-1">Settings</span>
+        </div>
         <div class="vslider__container mb-12">
           <span>Background transparency</span>
           <vue-slider class="vslider" v-model="sliderBackground" />
@@ -20,7 +22,7 @@
           <input type="checkbox" v-model="checkboxLegend" /> Legend
           <input type="checkbox" v-model="checkboxChartMetrics" /> Average Metrics
         </div>
-        <hr class="mb-12"/>
+        <hr class="mb-12" />
         <div class="mb-12">
           <span class="mr-12">Versions Number |</span>
           <span class="mr-12">Min</span>
@@ -73,9 +75,24 @@
           />
         </div>
         <div class="mb-12">
+          <span class="mr-12 pl-57" title="All vocabularies existed before Min and after Max are not displayed">Years of Life* |</span>
+          <span class="mr-12">Min</span>
+          <input
+            class="mr-12 years"
+            v-model="yearsOfLife.min"
+            @keypress.enter="confirmVersionNumber"
+          />
+          <span class="mr-12">Max</span>
+          <input
+            class="mr-12 years"
+            v-model="yearsOfLife.max"
+            @keypress.enter="confirmVersionNumber"
+          />
+        </div>
+        <div class="mb-12">
           <button @click="confirmVersionNumber">Confirm</button>
         </div>
-        <hr class="mb-12"/>
+        <hr class="mb-12" />
         <div @click="copyToClipboard" class="btn_copy" :class="copied && 'btn_copy--copied'">
           <span>{{ copied ? "Copied" : "Copy All to Clipboard" }}</span>
         </div>
@@ -109,12 +126,16 @@ export default {
       copied: false,
       incomingLinks: {
         min: 0,
-        max: 1000,
+        max: 1000
       },
       outgoingLinks: {
         min: 0,
-        max: 1000,
+        max: 1000
       },
+      yearsOfLife: {
+        min: '1970-01-01',
+        max: '2030-01-01'
+      }
     };
   },
   props: ["currentPageID"],
@@ -172,6 +193,7 @@ export default {
     this.maxVersion = this.$store.state.maxVersion;
     this.incomingLinks = this.$store.state.incomingLinks;
     this.outgoingLinks = this.$store.state.outgoingLinks;
+    this.yearsOfLife = this.$store.state.yearsOfLife ;
     this.calc();
   },
   methods: {
@@ -242,9 +264,27 @@ export default {
         this.$emit("callError", "Max >= Min. Think about it");
         return;
       }
+      if (this.yearsOfLife.min > this.yearsOfLife.max) {
+        this.$emit("callError", "Max >= Min. Think about it");
+        return;
+      }
       this.$emit("callError", "");
-      this.$emit("fetchClasses", this.minVersion, this.maxVersion, this.incomingLinks, this.outgoingLinks);
-      this.$emit("fetchVocabularies", this.minVersion, this.maxVersion, this.incomingLinks, this.outgoingLinks);
+      this.$emit(
+        "fetchClasses",
+        this.minVersion,
+        this.maxVersion,
+        this.incomingLinks,
+        this.outgoingLinks,
+        this.yearsOfLife,
+      );
+      this.$emit(
+        "fetchVocabularies",
+        this.minVersion,
+        this.maxVersion,
+        this.incomingLinks,
+        this.outgoingLinks,
+        this.yearsOfLife,
+      );
     }
   }
 };
@@ -254,8 +294,11 @@ export default {
 input {
   width: 55px;
 }
+.years {
+  width: 70px;
+}
 button {
-  padding: 6px 12px;  
+  padding: 8px 32px;
 }
 .main_settings {
   &__content {
@@ -289,9 +332,12 @@ button {
   cursor: pointer;
 }
 hr {
-  border-color: #00000020
+  border-color: #00000020;
 }
 .pl-15 {
   padding-left: 16px;
+}
+.pl-57 {
+  padding-left: 57px;
 }
 </style>

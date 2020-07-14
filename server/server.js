@@ -25,6 +25,7 @@ app.get('/classes', async (req, res) => {
     const max_version = req.query.max_version || 1000
     const incoming_links = req.query.incoming_links ? JSON.parse(req.query.incoming_links) : {min: 0, max: 100000}
     const outgoing_links = req.query.outgoing_links ? JSON.parse(req.query.outgoing_links) : {min: 0, max: 100000}
+    const years_of_life = req.query.years_of_life ? JSON.parse(req.query.years_of_life) : {min: '1970-01-01', max: '3000-01-01'}
     let query = `SELECT cl.* FROM "class" as cl
         left join vocabulary_metrics as vm
         on vm.name = cl.vocabulary_name and vm.version = cl.vocabulary_version_number
@@ -37,6 +38,14 @@ app.get('/classes', async (req, res) => {
         )
         and vem.incoming_links>=${incoming_links.min} and vem.incoming_links<=${incoming_links.max}
         and vem.incoming_links>=${outgoing_links.min} and vem.incoming_links<=${outgoing_links.max}
+		and vm.name not in (
+		select name from vocabulary_metrics
+		where version_name<'${years_of_life.min}'
+		GROUP BY name) 
+		and vm.name not in (
+		select name from vocabulary_metrics
+		where version_name>'${years_of_life.max}'
+		GROUP BY name)
         order by vm.name, vm.version_name`;
     client.query(query, (err, res1) => {
         if (err) {
@@ -53,6 +62,7 @@ app.get('/vocabularies', async (req, res) => {
     const max_version = req.query.max_version || 10000
     const incoming_links = req.query.incoming_links ? JSON.parse(req.query.incoming_links) : {min: 0, max: 100000}
     const outgoing_links = req.query.outgoing_links ? JSON.parse(req.query.outgoing_links) : {min: 0, max: 100000}
+    const years_of_life = req.query.years_of_life ? JSON.parse(req.query.years_of_life) : {min: '1970-01-01', max: '3000-01-01'}
     let query = `select * from vocabulary_metrics as vm
         inner join vocabulary_external_metrics as vem
         on vm.name = vem.vocabulary_name
@@ -63,6 +73,14 @@ app.get('/vocabularies', async (req, res) => {
         ) 
         and vem.incoming_links>=${incoming_links.min} and vem.incoming_links<=${incoming_links.max}
         and vem.incoming_links>=${outgoing_links.min} and vem.incoming_links<=${outgoing_links.max}
+		and vm.name not in (
+		select name from vocabulary_metrics
+		where version_name<'${years_of_life.min}'
+		GROUP BY name) 
+		and vm.name not in (
+		select name from vocabulary_metrics
+		where version_name>'${years_of_life.max}'
+		GROUP BY name)
         order by vm.name, vm.version_name`;
     client.query(query, (err, res1) => {
         if (err) {
