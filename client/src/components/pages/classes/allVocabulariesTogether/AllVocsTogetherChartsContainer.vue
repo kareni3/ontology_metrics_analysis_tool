@@ -46,6 +46,7 @@ export default {
           voc.name === cclass.vocabulary_name &&
           voc.version === cclass.vocabulary_version_number
       );
+      if (!vocabulary) return
       Object.keys(
         this.vocabularyList[vocabulary.name].versions[vocabulary.version_name]
           .metrics

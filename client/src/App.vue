@@ -81,6 +81,9 @@ export default {
     "$store.state.maxVersion"(v) {
       if (v !== undefined) localStorage.setItem("maxVersion", v);
     },
+    "$store.state.betweenVersionsTime"(v) {
+      if (v !== undefined) localStorage.setItem("betweenVersionsTime", v);
+    },
     "$store.state.incomingLinks"(v) {
       if (v !== undefined) localStorage.setItem("incomingLinks", JSON.stringify(v));
     },
@@ -99,14 +102,16 @@ export default {
       JSON.parse(localStorage.getItem("minVersion")) || undefined;
     const maxVersion =
       JSON.parse(localStorage.getItem("maxVersion")) || undefined;
+    const betweenVersionsTime =
+      JSON.parse(localStorage.getItem("betweenVersionsTime")) || undefined;
     const incomingLinks =
       JSON.parse(localStorage.getItem("incomingLinks")) || undefined;
     const outgoingLinks =
       JSON.parse(localStorage.getItem("outgoingLinks")) || undefined;
     const yearsOfLife =
       JSON.parse(localStorage.getItem("yearsOfLife")) || undefined;
-    await this.fetchClasses(minVersion, maxVersion, incomingLinks, outgoingLinks, yearsOfLife);
-    await this.fetchVocabularies(minVersion, maxVersion, incomingLinks, outgoingLinks, yearsOfLife);
+    await this.fetchClasses(minVersion, maxVersion, incomingLinks, outgoingLinks, yearsOfLife, betweenVersionsTime);
+    await this.fetchVocabularies(minVersion, maxVersion, incomingLinks, outgoingLinks, yearsOfLife, betweenVersionsTime);
     this.isReady = true;
   },
   mounted() {
@@ -142,13 +147,13 @@ export default {
     changePage(page) {
       this.currentPageName = page;
     },
-    async fetchClasses(minVersion, maxVersion, incomingLinks, outgoingLinks, yearsOfLife) {
-      await this.$store.dispatch("fetchClasses", {minVersion, maxVersion, incomingLinks, outgoingLinks, yearsOfLife});
+    async fetchClasses(minVersion, maxVersion, incomingLinks, outgoingLinks, yearsOfLife, betweenVersionsTime) {
+      await this.$store.dispatch("fetchClasses", {minVersion, maxVersion, incomingLinks, outgoingLinks, yearsOfLife, betweenVersionsTime});
     },
-    async fetchVocabularies(minVersion, maxVersion, incomingLinks, outgoingLinks, yearsOfLife) {
+    async fetchVocabularies(minVersion, maxVersion, incomingLinks, outgoingLinks, yearsOfLife, betweenVersionsTime) {
       let currentPageName = this.currentPageName;
       this.currentPageName = "";
-      await this.$store.dispatch("fetchVocabularies", {minVersion, maxVersion, incomingLinks, outgoingLinks, yearsOfLife});
+      await this.$store.dispatch("fetchVocabularies", {minVersion, maxVersion, incomingLinks, outgoingLinks, yearsOfLife, betweenVersionsTime});
       this.$nextTick(() => {
         this.currentPageName = currentPageName;
       });

@@ -13,6 +13,7 @@ const store = new Vuex.Store({
     vocabularyNames: [],
     minVersion: 1,
     maxVersion: 100,
+    betweenVersionsTime: "0000-00-00",
     incomingLinks: {
       min: 0,
       max: 1000,
@@ -69,6 +70,9 @@ const store = new Vuex.Store({
     fetchMaxVersion(state, maxVersion) {
       state.maxVersion = maxVersion;
     },
+    fetchBetweenVersionsTime(state, betweenVersionsTime) {
+      state.betweenVersionsTime = betweenVersionsTime;
+    },
     fetchIncomingLinks(state, incomingLinks) {
       state.incomingLinks = Object.assign({}, state.incomingLinks, incomingLinks)
     },
@@ -99,7 +103,7 @@ const store = new Vuex.Store({
       commit('fetchLineWidth', width);
     },
     async fetchClasses({ commit }, data) {
-      const res = await mainApi.getClasses(data.minVersion, data.maxVersion, data.incomingLinks, data.outgoingLinks, data.yearsOfLife);
+      const res = await mainApi.getClasses(data.minVersion, data.maxVersion, data.incomingLinks, data.outgoingLinks, data.yearsOfLife, data.betweenVersionsTime);
       const classMetricNames = [];
       if (res.classes[0]) Object.keys(res.classes[0]).forEach(metricName => {
         if (CLASS_SPECIAL_COLUMNS.includes(metricName)) return;
@@ -107,6 +111,7 @@ const store = new Vuex.Store({
       })
       if (data.minVersion) commit('fetchMinVersion', data.minVersion);
       if (data.maxVersion) commit('fetchMaxVersion', data.maxVersion);
+      if (data.betweenVersionsTime) commit('fetchBetweenVersionsTime', data.betweenVersionsTime);
       if (data.incomingLinks) commit('fetchIncomingLinks', data.incomingLinks);
       if (data.outgoingLinks) commit('fetchOutgoingLinks', data.outgoingLinks);
       if (data.yearsOfLife) commit('fetchYearsOfLife', data.yearsOfLife);
@@ -114,7 +119,7 @@ const store = new Vuex.Store({
       commit('fetchClassMetricNames', classMetricNames);
     },
     async fetchVocabularies({ commit }, data) {
-      const res = await mainApi.getVocabularies(data.minVersion, data.maxVersion, data.incomingLinks, data.outgoingLinks, data.yearsOfLife);
+      const res = await mainApi.getVocabularies(data.minVersion, data.maxVersion, data.incomingLinks, data.outgoingLinks, data.yearsOfLife, data.betweenVersionsTime);
       const vocabularyNames = []
       if (res.vocabularies[0]) res.vocabularies.forEach(vocabulary => {
         if (!vocabularyNames.includes(vocabulary.name)) vocabularyNames.push(vocabulary.name);
@@ -126,6 +131,7 @@ const store = new Vuex.Store({
       })
       if (data.minVersion) commit('fetchMinVersion', data.minVersion);
       if (data.maxVersion) commit('fetchMaxVersion', data.maxVersion);
+      if (data.betweenVersionsTime) commit('fetchBetweenVersionsTime', data.betweenVersionsTime);
       if (data.incomingLinks) commit('fetchIncomingLinks', data.incomingLinks);
       if (data.outgoingLinks) commit('fetchOutgoingLinks', data.outgoingLinks);
       if (data.yearsOfLife) commit('fetchYearsOfLife', data.yearsOfLife);

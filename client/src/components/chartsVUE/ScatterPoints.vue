@@ -52,6 +52,9 @@ export default {
     "$store.state.maxVersion"() {
       this.setDataset();
     },
+    "$store.state.betweenVersionsTime"() {
+      this.setDataset();
+    },
     "$store.state.incomingLinks"() {
       this.setDataset();
     },

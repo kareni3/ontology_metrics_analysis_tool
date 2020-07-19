@@ -92,6 +92,20 @@
             @keypress.enter="confirmVersionNumber"
           />
         </div>
+        <div class="mb-12 pr-13">
+          <span
+            class="mr-12"
+            title="All vocabularies born before Min and after Max year are not displayed"
+          >Time between versions |</span>
+          <span class="mr-12">Min</span>
+          <input
+            class="mr-12 years"
+            v-model="betweenVersionsTime"
+            @keypress.enter="confirmVersionNumber"
+          />
+          <span class="mr-12">Max</span>
+          <input disabled class="mr-12 years" />
+        </div>
         <div class="mb-12">
           <button @click="confirmVersionNumber">Confirm</button>
         </div>
@@ -123,6 +137,7 @@ export default {
     return {
       minVersion: 1,
       maxVersion: 1000,
+      betweenVersionsTime: "0000-00-00",
       sliderBackground: 0,
       sliderLine: 0,
       sliderLineWidth: 30,
@@ -197,6 +212,7 @@ export default {
   mounted() {
     this.minVersion = this.$store.state.minVersion;
     this.maxVersion = this.$store.state.maxVersion;
+    this.betweenVersionsTime = this.$store.state.betweenVersionsTime;
     this.incomingLinks = this.$store.state.incomingLinks;
     this.outgoingLinks = this.$store.state.outgoingLinks;
     this.yearsOfLife = this.$store.state.yearsOfLife;
@@ -278,7 +294,14 @@ export default {
         this.$emit("callError", "Max >= Min. Think about it");
         return;
       }
-      if (this.yearsOfLife.min.length !== 10 || this.yearsOfLife.max.length !== 10) {
+      if (this.betweenVersionsTime.length !== 10) {
+        this.$emit("callError", "Mistake in Time between versions");
+        return;
+      }
+      if (
+        this.yearsOfLife.min.length !== 10 ||
+        this.yearsOfLife.max.length !== 10
+      ) {
         this.$emit("callError", "Mistake in Years of Life");
         return;
       }
@@ -289,7 +312,8 @@ export default {
         this.maxVersion,
         this.incomingLinks,
         this.outgoingLinks,
-        this.yearsOfLife
+        this.yearsOfLife,
+        this.betweenVersionsTime,
       );
       this.$emit(
         "fetchVocabularies",
@@ -297,7 +321,8 @@ export default {
         this.maxVersion,
         this.incomingLinks,
         this.outgoingLinks,
-        this.yearsOfLife
+        this.yearsOfLife,
+        this.betweenVersionsTime,
       );
     }
   }
@@ -365,5 +390,8 @@ hr {
 }
 .pl-57 {
   padding-left: 57px;
+}
+.pr-13 {
+  padding-right: 13px;
 }
 </style>

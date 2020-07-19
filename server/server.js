@@ -23,10 +23,11 @@ client.connect();
 app.get('/classes', async (req, res) => {
     const min_version = req.query.min_version || 1
     const max_version = req.query.max_version || 1000
-    const incoming_links = req.query.incoming_links ? JSON.parse(req.query.incoming_links) : {min: 0, max: 100000}
-    const outgoing_links = req.query.outgoing_links ? JSON.parse(req.query.outgoing_links) : {min: 0, max: 100000}
-    const years_of_life = req.query.years_of_life ? JSON.parse(req.query.years_of_life) : {min: '1970-01-01', max: '3000-01-01'}
-    let query = `SELECT cl.* FROM "class" as cl
+    const incoming_links = req.query.incoming_links ? JSON.parse(req.query.incoming_links) : { min: 0, max: 100000 }
+    const outgoing_links = req.query.outgoing_links ? JSON.parse(req.query.outgoing_links) : { min: 0, max: 100000 }
+    const years_of_life = req.query.years_of_life ? JSON.parse(req.query.years_of_life) : { min: '1970-01-01', max: '3000-01-01' }
+
+    let query = `SELECT cl.*, vm.version_name FROM "class" as cl
         left join vocabulary_metrics as vm
         on vm.name = cl.vocabulary_name and vm.version = cl.vocabulary_version_number
         inner join vocabulary_external_metrics as vem
@@ -44,6 +45,7 @@ app.get('/classes', async (req, res) => {
 		GROUP BY name) 
 		and vm.version_name<'${years_of_life.max}'
         order by vm.name, vm.version_name`;
+
     client.query(query, (err, res1) => {
         if (err) {
             console.error(err);
@@ -57,9 +59,11 @@ app.get('/classes', async (req, res) => {
 app.get('/vocabularies', async (req, res) => {
     const min_version = req.query.min_version || 1
     const max_version = req.query.max_version || 10000
-    const incoming_links = req.query.incoming_links ? JSON.parse(req.query.incoming_links) : {min: 0, max: 100000}
-    const outgoing_links = req.query.outgoing_links ? JSON.parse(req.query.outgoing_links) : {min: 0, max: 100000}
-    const years_of_life = req.query.years_of_life ? JSON.parse(req.query.years_of_life) : {min: '1970-01-01', max: '3000-01-01'}
+    const incoming_links = req.query.incoming_links ? JSON.parse(req.query.incoming_links) : { min: 0, max: 100000 }
+    const outgoing_links = req.query.outgoing_links ? JSON.parse(req.query.outgoing_links) : { min: 0, max: 100000 }
+    const years_of_life = req.query.years_of_life ? JSON.parse(req.query.years_of_life) : { min: '1970-01-01', max: '3000-01-01' }
+    const min_version_period = req.query.min_version_period || 0
+
     let query = `select * from vocabulary_metrics as vm
         inner join vocabulary_external_metrics as vem
         on vm.name = vem.vocabulary_name
@@ -76,12 +80,27 @@ app.get('/vocabularies', async (req, res) => {
 		GROUP BY name) 
 		and vm.version_name<'${years_of_life.max}'
         order by vm.name, vm.version_name`;
+
     client.query(query, (err, res1) => {
         if (err) {
             console.error(err);
             return;
         }
-        res.json({ vocabularies: res1.rows })
+        let voc_name = null
+        let prevDate = null
+
+        const vocabularies = res1.rows.filter((cur, i) => {
+            if (voc_name !== cur.name) {
+                voc_name = cur.name
+                prevDate = new Date(cur.version_name)
+                return true
+            }
+            currentDate = new Date(cur.version_name)
+            const result = (currentDate - prevDate) >= min_version_period
+            prevDate = currentDate
+            return result || (!res1.rows[i + 1] || res1.rows[i + 1].name !== cur.name)
+        });
+        res.json({ vocabularies: vocabularies })
     });
 })
 

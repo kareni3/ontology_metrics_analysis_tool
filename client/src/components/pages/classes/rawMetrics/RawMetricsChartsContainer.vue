@@ -8,11 +8,11 @@
     >| {{v}} |</span>
     <VersionsContainer
       ref="VocabularyComponent"
-      v-if="vocabularyList"
+      v-if="vocabularyList && versions"
       :enabledDataList="enabledMetricNames"
       :maxMetricValue="maxMetricValueComputed"
       :vocabularyName="vocabularyName"
-      :versions="vocabularyList[vocabularyName].versions"
+      :versions="versions"
       @prevVoc="prevVocabulary"
       @nextVoc="nextVocabulary"
     />
@@ -40,6 +40,9 @@ export default {
     maxVocabularyLocalMetricValue: {}
   },
   computed: {
+    versions() {
+      return this.vocabularyList[this.vocabularyName] ? this.vocabularyList[this.vocabularyName].versions : null
+    }, 
     maxMetricValueComputed() {
       return this.checkboxEqualizeY
         ? this.maxMetricValue
