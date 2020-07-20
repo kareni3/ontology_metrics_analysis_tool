@@ -105,3 +105,37 @@ input[type="checkbox"] {
   width: calc(50% - 12px);
   display: inline-block;
 }
+
+
+
+.dialog {
+  position: fixed;
+  background-color: white;
+  top: 5%;
+  left: 10%;
+  width: 80%;
+  height: 90%;
+  z-index: 1000000000;
+  box-shadow: 4px 4px 10px 0px;
+  & > div {
+    height: inherit;
+    overflow: auto;
+  }
+
+  .close {
+    position: absolute;
+    right: 24px;
+    top: 6px;
+    cursor: pointer;
+    width: 1rem;
+    text-align: center;
+    background-color: white;
+    padding: 4px;
+    border: 1px solid #00000080;
+    border-radius: 50%;
+  }
+  img {
+    margin: 24px;
+    width: calc(100% - 48px);
+  }
+}
