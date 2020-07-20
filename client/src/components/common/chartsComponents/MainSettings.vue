@@ -261,15 +261,19 @@ export default {
           localStorage.getItem(this.currentPageID + "checkboxChartMetrics")
         );
       this.sliderLine =
-        JSON.parse(localStorage.getItem(this.currentPageID + "sliderLine")) ||
-        Math.ceil(
+        typeof JSON.parse(localStorage.getItem(this.currentPageID + "sliderLine")) === 'number'
+        ? JSON.parse(localStorage.getItem(this.currentPageID + "sliderLine"))
+        : Math.ceil(
           (parseInt(this.$store.state.transparency.line, 16) * 100) / 255
         );
       this.sliderBackground =
-        JSON.parse(
+        typeof JSON.parse(
           localStorage.getItem(this.currentPageID + "sliderBackground")
-        ) ||
-        Math.ceil(
+        ) === 'number'
+        ? JSON.parse(
+          localStorage.getItem(this.currentPageID + "sliderBackground")
+        )
+        : Math.ceil(
           (parseInt(this.$store.state.transparency.background, 16) * 100) / 255
         );
     },
