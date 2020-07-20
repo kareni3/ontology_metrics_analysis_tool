@@ -218,7 +218,7 @@ export default {
         acc += add;
         return acc;
       }, 0) / counter
-      this.standardDeviationMean = Math.sqrt(sumSquaredY / counter - (sumY / counter) ^ 2)
+      this.standardDeviationMean = Math.sqrt(sumSquaredY / counter - (sumY / counter) ** 2)
       return res
     },
     outOf2SigmaAvgMean() {
@@ -283,7 +283,7 @@ export default {
         }
         return acc;
       }, 0) / counter
-      this.standardDeviationWeightedMean = Math.sqrt(sumSquaredY / counter - (sumY / counter) ^ 2)
+      this.standardDeviationWeightedMean = Math.sqrt(sumSquaredY / counter - (sumY / counter) ** 2)
       return res
     },
     outOf2SigmaAvgWeightedMean() {
@@ -374,7 +374,7 @@ export default {
         acc += add;
         return acc;
       }, 0) / counter
-      this.standardDeviationMedian = Math.sqrt(sumSquaredY / counter - (sumY / counter) ^ 2)
+      this.standardDeviationMedian = Math.sqrt(sumSquaredY / counter - (sumY / counter) ** 2)
       return res
     },
     outOf2SigmaAvgMedian() {
@@ -449,7 +449,7 @@ export default {
         acc += add;
         return acc;
       }, 0) / counter
-      this.standardDeviationMaxValue = Math.sqrt(sumSquaredY / counter - (sumY / counter) ^ 2)
+      this.standardDeviationMaxValue = Math.sqrt(sumSquaredY / counter - (sumY / counter) ** 2)
       return res
     },
     outOf2SigmaAvgMaxValue() {
@@ -504,7 +504,7 @@ export default {
         acc += add;
         return acc;
       }, 0) / counter
-      this.standardDeviationMinValue = Math.sqrt(sumSquaredY / counter - (sumY / counter) ^ 2)
+      this.standardDeviationMinValue = Math.sqrt(sumSquaredY / counter - (sumY / counter) ** 2)
       return res
     },
     outOf2SigmaAvgMinValue() {
@@ -559,7 +559,7 @@ export default {
         acc += add;
         return acc;
       }, 0) / counter
-      this.standardDeviationAbsoluteChange = Math.sqrt(sumSquaredY / counter - (sumY / counter) ^ 2)
+      this.standardDeviationAbsoluteChange = Math.sqrt(sumSquaredY / counter - (sumY / counter) ** 2)
       return res
     },
     outOf2SigmaAvgAbsoluteChange() {
@@ -625,7 +625,7 @@ export default {
         }
         return acc;
       }, 0) / counter
-      this.standardDeviationAbsoluteWeightedChange = Math.sqrt(sumSquaredY / counter - (sumY / counter) ^ 2)
+      this.standardDeviationAbsoluteWeightedChange = Math.sqrt(sumSquaredY / counter - (sumY / counter) ** 2)
       return res
     },
     outOf2SigmaAvgAbsoluteWeightedChange() {
@@ -714,7 +714,7 @@ export default {
         acc += add;
         return acc;
       }, 0) / counter
-      this.standardDeviationAbsoluteChangePerVersion = Math.sqrt(sumSquaredY / counter - (sumY / counter) ^ 2)
+      this.standardDeviationAbsoluteChangePerVersion = Math.sqrt(sumSquaredY / counter - (sumY / counter) ** 2)
       return res
     },
     outOf2SigmaAvgAbsoluteChangePerVersion() {
@@ -786,7 +786,7 @@ export default {
         }
         return acc;
       }, 0) / counter
-      this.standardDeviationAbsoluteWeightedChangePerVersion = Math.sqrt(sumSquaredY / counter - (sumY / counter) ^ 2)
+      this.standardDeviationAbsoluteWeightedChangePerVersion = Math.sqrt(sumSquaredY / counter - (sumY / counter) ** 2)
       return res
     },
     outOf2SigmaAvgAbsoluteWeightedChangePerVersion() {
@@ -891,7 +891,7 @@ export default {
         }
         return acc;
       }, 0) / counter
-      this.standardDeviationRelativeChange = Math.sqrt(sumSquaredY / counter - (sumY / counter) ^ 2)
+      this.standardDeviationRelativeChange = Math.sqrt(sumSquaredY / counter - (sumY / counter) ** 2)
       return res
     },
     outOf2SigmaAvgRelativeChange() {
@@ -989,7 +989,7 @@ export default {
         }
         return acc;
       }, 0) / counter
-      this.standardDeviationRelativeWeightedChange = Math.sqrt(sumSquaredY / counter - (sumY / counter) ^ 2)
+      this.standardDeviationRelativeWeightedChange = Math.sqrt(sumSquaredY / counter - (sumY / counter) ** 2)
       return res
     },
     outOf2SigmaAvgRelativeWeightedChange() {
@@ -1100,7 +1100,7 @@ export default {
         }
         return acc;
       }, 0) / counter
-      this.standardDeviationRelativeChangePerVersion = Math.sqrt(sumSquaredY / counter - (sumY / counter) ^ 2)
+      this.standardDeviationRelativeChangePerVersion = Math.sqrt(sumSquaredY / counter - (sumY / counter) ** 2)
       return res
     },
     outOf2SigmaAvgRelativeChangePerVersion() {
@@ -1210,7 +1210,7 @@ export default {
         }
         return acc;
       }, 0) / counter
-      this.standardDeviationRelativeWeightedChangePerVersion = Math.sqrt(sumSquaredY / counter - (sumY / counter) ^ 2)
+      this.standardDeviationRelativeWeightedChangePerVersion = Math.sqrt(sumSquaredY / counter - (sumY / counter) ** 2)
       return res
     },
     outOf2SigmaAvgRelativeWeightedChangePerVersion() {
