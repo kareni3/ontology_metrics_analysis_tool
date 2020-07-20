@@ -2,6 +2,10 @@
   <div class="chart">
     <div>
       <span class="asdds">{{name}}</span>
+      <div>
+        Pearson correlation coefficient:
+        <strong v-if="r">{{r.toFixed(3)}}</strong>
+      </div>
       <Linee
         v-if="datacollection"
         :chart-data="datacollection"
@@ -33,13 +37,35 @@ export default {
             }
           ]
         }
-      },
+      }
     };
   },
   components: {
     Linee
   },
   computed: {
+    r() {
+      const avg = [0, 0];
+      let n = 0;
+      this.radar.forEach(el => {
+        avg[0] += +el.x;
+        avg[1] += +el.y;
+        n++;
+      });
+      avg[0] /= n;
+      avg[1] /= n;
+      let numerator = 0;
+      let denominator = 0;
+      let denominatorX = 0;
+      let denominatorY = 0;
+      this.radar.forEach(el => {
+        numerator += (+el.x - avg[0]) * (+el.y - avg[1]);
+        denominatorX += (+el.x - avg[0]) ** 2;
+        denominatorY += (+el.y - avg[1]) ** 2;
+      });
+      denominator = Math.sqrt(denominatorX * denominatorY);
+      return numerator / denominator;
+    },
     myStyles() {
       return {
         height: `600px`,
@@ -74,11 +100,11 @@ export default {
     },
     "$store.state.yearsOfLife"() {
       this.setDataset();
-    },
+    }
   },
   props: {
     radar: {},
-    name: {},
+    name: {}
   },
   mounted() {
     this.updateOptions();
@@ -98,7 +124,7 @@ export default {
               position: "bottom",
               ticks: {
                 userCallback: function(label) {
-                  let n = (Math.exp(+label)-1)
+                  let n = Math.exp(+label) - 1;
                   return n > 10 ? n.toFixed() : n.toFixed(2);
                 }
               }
@@ -108,24 +134,26 @@ export default {
             {
               ticks: {
                 userCallback: function(label) {
-                  let n = (Math.exp(+label)-1)
+                  let n = Math.exp(+label) - 1;
                   return n > 10 ? n.toFixed() : n.toFixed(2);
                 }
               }
             }
-          ],
+          ]
         }
       };
     },
     setDataset() {
       this.datacollection = {
-        datasets: [{
-          data: this.radar,
-          backgroundColor: "#f8797900",
-          borderColor: "#f8797900",
-          pointBackgroundColor: "#f84545" + "c0",
-          pointRadius: 4,
-        }]
+        datasets: [
+          {
+            data: this.radar,
+            backgroundColor: "#f8797900",
+            borderColor: "#f8797900",
+            pointBackgroundColor: "#f84545" + "c0",
+            pointRadius: 4
+          }
+        ]
       };
     }
   }

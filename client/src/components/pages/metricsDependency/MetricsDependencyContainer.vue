@@ -25,7 +25,7 @@
         <input class="mr-12 metricMinMax" v-model="metricX.max" @keypress.enter="confirmMinMax" />
       </div>
       <div class="ml-12 mb-12 metricMinMax__conatiner">
-        <span class="mr-12">Min</span>
+        <span class="mr-12">Min</span> 
         <input class="mr-12 metricMinMax" v-model="metricY.min" @keypress.enter="confirmMinMax" />
         <span class="mr-12">Max</span>
         <input class="mr-12 metricMinMax" v-model="metricY.max" @keypress.enter="confirmMinMax" />
