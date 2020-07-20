@@ -48,8 +48,8 @@ export default {
       const avg = [0, 0];
       let n = 0;
       this.radar.forEach(el => {
-        avg[0] += +el.x;
-        avg[1] += +el.y;
+        avg[0] += Math.exp(+el.x) - 1;
+        avg[1] += Math.exp(+el.y) - 1;
         n++;
       });
       avg[0] /= n;
@@ -59,9 +59,9 @@ export default {
       let denominatorX = 0;
       let denominatorY = 0;
       this.radar.forEach(el => {
-        numerator += (+el.x - avg[0]) * (+el.y - avg[1]);
-        denominatorX += (+el.x - avg[0]) ** 2;
-        denominatorY += (+el.y - avg[1]) ** 2;
+        numerator += (Math.exp(+el.x) - 1 - avg[0]) * (Math.exp(+el.y) - 1 - avg[1]);
+        denominatorX += (Math.exp(+el.x) - 1 - avg[0]) ** 2;
+        denominatorY += (Math.exp(+el.y) - 1 - avg[1]) ** 2;
       });
       denominator = Math.sqrt(denominatorX * denominatorY);
       return numerator / denominator;
