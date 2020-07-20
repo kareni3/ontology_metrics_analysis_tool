@@ -3,6 +3,7 @@ export const CLASS_SPECIAL_COLUMNS = [
   "name",
   "vocabulary_name",
   "version_name",
+  "version",
   "vocabulary_version_number",
   "incoming_links",
   "outgoing_links",

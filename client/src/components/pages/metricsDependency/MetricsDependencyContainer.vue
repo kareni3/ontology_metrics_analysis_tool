@@ -68,6 +68,7 @@
 <script>
 import ScatterPoints from "@/components/chartsVUE/ScatterPoints";
 import CheckboxList from "@/components/common/chartsComponents/CheckboxList";
+import { VOCABULARY_SPECIAL_COLUMNS } from "@/CONSTANTS.js";
 
 export default {
   name: "MetricsDependency",
@@ -199,6 +200,8 @@ export default {
         Object.entries(vocabulary).forEach(v1 => {
           Object.entries(vocabulary).forEach(v2 => {
             if (v1[0] === v2[0]) return;
+            if (VOCABULARY_SPECIAL_COLUMNS.includes(v1[0])) return;
+            if (VOCABULARY_SPECIAL_COLUMNS.includes(v2[0])) return;
             if (this.selectedMetricForPearson && v1[0] !== this.selectedMetricForPearson) return;
             if (isNaN(+v1[1])) return;
             if (isNaN(+v2[1])) return;
