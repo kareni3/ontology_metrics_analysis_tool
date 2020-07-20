@@ -8,8 +8,12 @@
         <allVocabularies
           v-if="ind < $store.state.graphCount"
           :data="data[1]"
-          :namee="data[0]"
+          :name="data[0]"
           :derivativeFunction="checkboxderivativeFunction"
+          :disabledAverages="disabledAverages"
+          :disabledMedians="disabledMedians"
+          @changeDisabled="onChangeDisabled"
+          @changeDisabledMedians="onChangeDisabledMedians"
         />
       </div>
     </div>
@@ -27,7 +31,9 @@ export default {
   data() {
     return {
       allVocabularies: {},
-      checkboxderivativeFunction: false
+      checkboxderivativeFunction: false,
+      disabledAverages: {},
+      disabledMedians: {},
     };
   },
   props: {
@@ -60,6 +66,12 @@ export default {
     this.setAllVocabularies();
   },
   methods: {
+    onChangeDisabled(disabled) {
+      this.disabledAverages = disabled;
+    },
+    onChangeDisabledMedians(disabled) {
+      this.disabledMedians = disabled;
+    },
     setAllVocabularies() {
       this.allVocabularies = {};
       Object.keys(
@@ -81,12 +93,14 @@ export default {
           Object.values(metric[1].X).forEach((el, i) => {
             this.allVocabularies[metric[0]][voc[0]].arr.push({
               x: metric[1].X.length === 1 ? 0 : i / (metric[1].X.length - 1),
-              y: metric[1].Y[i]
+              y: metric[1].Y[i],
+              weight: metric[1].weights[i],
             });
             if (metric[1].X.length === 1) {
               this.allVocabularies[metric[0]][voc[0]].arr.push({
                 x: metric[1].X.length === 1 ? 1 : i / (metric[1].X.length - 1),
-                y: metric[1].Y[i]
+                y: metric[1].Y[i],
+                weight: metric[1].weights[i],
               });
             }
             if (

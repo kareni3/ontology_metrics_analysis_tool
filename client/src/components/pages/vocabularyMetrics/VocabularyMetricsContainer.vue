@@ -98,7 +98,8 @@ export default {
             if (!VOCABULARY_SPECIAL_COLUMNS.includes(metric)) {
               this.vocabularyList[vocabulary.name].metrics[metric] = {
                 X: [],
-                Y: []
+                Y: [],
+                weights: [],
               };
             }
           });
@@ -111,6 +112,9 @@ export default {
             );
             this.vocabularyList[vocabulary.name].metrics[metric[0]].Y.push(
               metric[1]
+            );
+            this.vocabularyList[vocabulary.name].metrics[metric[0]].weights.push(
+              vocabulary.period
             );
           }
         });

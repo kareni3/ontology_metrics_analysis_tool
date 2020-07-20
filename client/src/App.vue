@@ -1,7 +1,8 @@
 <template>
   <div id="app" v-if="isReady">
     <div class="error_message" v-if="error">
-      Error: <span>{{error}}</span>
+      Error:
+      <span>{{error}}</span>
       <button @click="error=''">OK</button>
     </div>
     <div class="nav mb-12">
@@ -27,6 +28,12 @@
       @fetchClasses="fetchClasses"
       @fetchVocabularies="fetchVocabularies"
     />
+    <div v-if="$store.state.dialog" class="dialog">
+      <span @click="closeDialog" class="close">x</span>
+      <div>
+        <img src="./assets/img/indexes.png" alt="indexes" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -64,7 +71,7 @@ export default {
         "links metrics",
         "vocabulary life",
         "through time",
-        "dependency between metrics",
+        "dependency between metrics"
       ],
       currentPageName: null,
       error: "",
@@ -85,14 +92,17 @@ export default {
       if (v !== undefined) localStorage.setItem("betweenVersionsTime", v);
     },
     "$store.state.incomingLinks"(v) {
-      if (v !== undefined) localStorage.setItem("incomingLinks", JSON.stringify(v));
+      if (v !== undefined)
+        localStorage.setItem("incomingLinks", JSON.stringify(v));
     },
     "$store.state.outgoingLinks"(v) {
-      if (v !== undefined) localStorage.setItem("outgoingLinks", JSON.stringify(v));
+      if (v !== undefined)
+        localStorage.setItem("outgoingLinks", JSON.stringify(v));
     },
     "$store.state.yearsOfLife"(v) {
-      if (v !== undefined) localStorage.setItem("yearsOfLife", JSON.stringify(v));
-    },
+      if (v !== undefined)
+        localStorage.setItem("yearsOfLife", JSON.stringify(v));
+    }
   },
   async beforeMount() {
     this.setLocalsorage();
@@ -103,15 +113,29 @@ export default {
     const maxVersion =
       JSON.parse(localStorage.getItem("maxVersion")) || undefined;
     const betweenVersionsTime =
-      JSON.parse(localStorage.getItem("betweenVersionsTime")) || undefined;
+      localStorage.getItem("betweenVersionsTime") || undefined;
     const incomingLinks =
       JSON.parse(localStorage.getItem("incomingLinks")) || undefined;
     const outgoingLinks =
       JSON.parse(localStorage.getItem("outgoingLinks")) || undefined;
     const yearsOfLife =
       JSON.parse(localStorage.getItem("yearsOfLife")) || undefined;
-    await this.fetchClasses(minVersion, maxVersion, incomingLinks, outgoingLinks, yearsOfLife, betweenVersionsTime);
-    await this.fetchVocabularies(minVersion, maxVersion, incomingLinks, outgoingLinks, yearsOfLife, betweenVersionsTime);
+    await this.fetchClasses(
+      minVersion,
+      maxVersion,
+      incomingLinks,
+      outgoingLinks,
+      yearsOfLife,
+      betweenVersionsTime
+    );
+    await this.fetchVocabularies(
+      minVersion,
+      maxVersion,
+      incomingLinks,
+      outgoingLinks,
+      yearsOfLife,
+      betweenVersionsTime
+    );
     this.isReady = true;
   },
   mounted() {
@@ -125,6 +149,9 @@ export default {
     };
   },
   methods: {
+    closeDialog() {
+      this.$store.dispatch("fetchDialog", false)
+    },
     setLocalsorage() {
       if (localStorage.getItem(0 + "sliderLineWidth") === null) {
         localStorage.setItem(0 + "sliderLineWidth", 5);
@@ -147,13 +174,41 @@ export default {
     changePage(page) {
       this.currentPageName = page;
     },
-    async fetchClasses(minVersion, maxVersion, incomingLinks, outgoingLinks, yearsOfLife, betweenVersionsTime) {
-      await this.$store.dispatch("fetchClasses", {minVersion, maxVersion, incomingLinks, outgoingLinks, yearsOfLife, betweenVersionsTime});
+    async fetchClasses(
+      minVersion,
+      maxVersion,
+      incomingLinks,
+      outgoingLinks,
+      yearsOfLife,
+      betweenVersionsTime
+    ) {
+      await this.$store.dispatch("fetchClasses", {
+        minVersion,
+        maxVersion,
+        incomingLinks,
+        outgoingLinks,
+        yearsOfLife,
+        betweenVersionsTime
+      });
     },
-    async fetchVocabularies(minVersion, maxVersion, incomingLinks, outgoingLinks, yearsOfLife, betweenVersionsTime) {
+    async fetchVocabularies(
+      minVersion,
+      maxVersion,
+      incomingLinks,
+      outgoingLinks,
+      yearsOfLife,
+      betweenVersionsTime
+    ) {
       let currentPageName = this.currentPageName;
       this.currentPageName = "";
-      await this.$store.dispatch("fetchVocabularies", {minVersion, maxVersion, incomingLinks, outgoingLinks, yearsOfLife, betweenVersionsTime});
+      await this.$store.dispatch("fetchVocabularies", {
+        minVersion,
+        maxVersion,
+        incomingLinks,
+        outgoingLinks,
+        yearsOfLife,
+        betweenVersionsTime
+      });
       this.$nextTick(() => {
         this.currentPageName = currentPageName;
       });
@@ -206,6 +261,38 @@ export default {
     width: 100%;
     position: fixed;
     top: 0;
+  }
+}
+
+.dialog {
+  position: fixed;
+  background-color: white;
+  top: 5%;
+  left: 10%;
+  width: 80%;
+  height: 90%;
+  z-index: 1000000000;
+  box-shadow: 4px 4px 10px 0px;
+  div {
+    height: inherit;
+    overflow: auto;
+  }
+
+  .close {
+    position: absolute;
+    right: 24px;
+    top: 6px;
+    cursor: pointer;
+    width: 1rem;
+    text-align: center;
+    background-color: white;
+    padding: 4px;
+    border: 1px solid #00000080;
+    border-radius: 50%;
+  }
+  img {
+    margin: 24px;
+    width: calc(100% - 48px);
   }
 }
 </style>

@@ -89,17 +89,23 @@ app.get('/vocabularies', async (req, res) => {
         let voc_name = null
         let prevDate = null
 
-        const vocabularies = res1.rows.filter((cur, i) => {
+        const vocabularies = res1.rows.reduce((acc, cur, i) => {
             if (voc_name !== cur.name) {
                 voc_name = cur.name
                 prevDate = new Date(cur.version_name)
-                return true
+                cur.period = 0
+                acc.push(cur)
+                return acc
             }
-            currentDate = new Date(cur.version_name)
+            const currentDate = new Date(cur.version_name)
             const result = (currentDate - prevDate) >= min_version_period
+            if (result || (!res1.rows[i + 1] || res1.rows[i + 1].name !== cur.name)) {
+                cur.period = currentDate - prevDate
+                acc.push(cur)
+            }
             prevDate = currentDate
-            return result || (!res1.rows[i + 1] || res1.rows[i + 1].name !== cur.name)
-        });
+            return acc
+        }, []);
         res.json({ vocabularies: vocabularies })
     });
 })

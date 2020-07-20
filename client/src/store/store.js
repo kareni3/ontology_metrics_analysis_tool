@@ -13,6 +13,7 @@ const store = new Vuex.Store({
     vocabularyNames: [],
     minVersion: 1,
     maxVersion: 100,
+    dialog: false,
     betweenVersionsTime: "0000-00-00",
     incomingLinks: {
       min: 0,
@@ -73,6 +74,9 @@ const store = new Vuex.Store({
     fetchBetweenVersionsTime(state, betweenVersionsTime) {
       state.betweenVersionsTime = betweenVersionsTime;
     },
+    fetchDialog(state, dialog) {
+      state.dialog = dialog;
+    },
     fetchIncomingLinks(state, incomingLinks) {
       state.incomingLinks = Object.assign({}, state.incomingLinks, incomingLinks)
     },
@@ -101,6 +105,9 @@ const store = new Vuex.Store({
     },
     fetchLineWidth({ commit }, width) {
       commit('fetchLineWidth', width);
+    },
+    fetchDialog({ commit }, dialog) {
+      commit('fetchDialog', dialog);
     },
     async fetchClasses({ commit }, data) {
       const res = await mainApi.getClasses(data.minVersion, data.maxVersion, data.incomingLinks, data.outgoingLinks, data.yearsOfLife, data.betweenVersionsTime);
