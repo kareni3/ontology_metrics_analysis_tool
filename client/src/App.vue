@@ -150,7 +150,7 @@ export default {
   },
   methods: {
     closeDialog() {
-      this.$store.dispatch("fetchDialog", false)
+      this.$store.dispatch("fetchDialog", false);
     },
     setLocalsorage() {
       if (localStorage.getItem(0 + "sliderLineWidth") === null) {
@@ -252,6 +252,7 @@ export default {
 }
 .main_settings {
   width: 60%;
+  z-index: 10000;
   margin: auto;
   position: fixed;
   top: 0;
