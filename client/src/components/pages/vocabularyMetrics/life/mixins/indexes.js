@@ -240,7 +240,7 @@ export default {
         acc.push((cur.borders.max + cur.borders.min) / 2);
         return acc;
       }, []);
-      const arrSort = arr.sort();
+      const arrSort = arr.sort((a,b)=>a-b);
       const len = arrSort.length;
       const mid = Math.ceil(len / 2);
       return len % 2 == 0 && len > 1
@@ -325,7 +325,7 @@ export default {
         }
         return acc;
       }, []);
-      const arrSort = arr.sort();
+      const arrSort = arr.sort((a,b)=>a-b);
       const len = arrSort.length;
       const mid = Math.ceil(len / 2);
       return len % 2 == 0 && len > 1
@@ -362,7 +362,7 @@ export default {
       let counter = 0
       const res = Object.values(this.data).reduce((acc, cur) => {
         const arr = cur.arr.map(c_cur => c_cur.y);
-        const arrSort = arr.sort();
+        const arrSort = arr.sort((a,b)=>a-b);
         const len = arrSort.length;
         const mid = Math.ceil(len / 2);
         const add = len % 2 == 0 && len > 1
@@ -380,7 +380,7 @@ export default {
     outOf2SigmaAvgMedian() {
       const res = Object.entries(this.data).reduce((acc, cur) => {
         const arr = cur[1].arr.map(c_cur => c_cur.y);
-        const arrSort = arr.sort();
+        const arrSort = arr.sort((a,b)=>a-b);
         const len = arrSort.length;
         const mid = Math.ceil(len / 2);
         const add = len % 2 == 0 && len > 1
@@ -400,7 +400,7 @@ export default {
     medMedian() {
       const arr = Object.values(this.data).reduce((acc, cur) => {
         const arr = cur.arr.map(c_cur => c_cur.y);
-        const arrSort = arr.sort();
+        const arrSort = arr.sort((a,b)=>a-b);
         const len = arrSort.length;
         const mid = Math.ceil(len / 2);
         acc.push(
@@ -410,7 +410,7 @@ export default {
         );
         return acc;
       }, []);
-      const arrSort = arr.sort();
+      const arrSort = arr.sort((a,b)=>a-b);
       const len = arrSort.length;
       const mid = Math.ceil(len / 2);
       return len % 2 == 0 && len > 1
@@ -420,7 +420,7 @@ export default {
     outOf2SigmaMedMedian() {
       const res = Object.entries(this.data).reduce((acc, cur) => {
         const arr = cur[1].arr.map(c_cur => c_cur.y);
-        const arrSort = arr.sort();
+        const arrSort = arr.sort((a,b)=>a-b);
         const len = arrSort.length;
         const mid = Math.ceil(len / 2);
         const add = len % 2 == 0 && len > 1
@@ -471,7 +471,7 @@ export default {
         acc.push(cur.borders.max);
         return acc;
       }, []);
-      const arrSort = arr.sort();
+      const arrSort = arr.sort((a,b)=>a-b);
       const len = arrSort.length;
       const mid = Math.ceil(len / 2);
       return len % 2 == 0 && len > 1
@@ -526,7 +526,7 @@ export default {
         acc.push(cur.borders.min);
         return acc;
       }, []);
-      const arrSort = arr.sort();
+      const arrSort = arr.sort((a,b)=>a-b);
       const len = arrSort.length;
       const mid = Math.ceil(len / 2);
       return len % 2 == 0 && len > 1
@@ -581,7 +581,7 @@ export default {
         acc.push(+cur.arr[cur.arr.length - 1].y - +cur.arr[0].y);
         return acc;
       }, []);
-      const arrSort = arr.sort();
+      const arrSort = arr.sort((a,b)=>a-b);
       const len = arrSort.length;
       const mid = Math.ceil(len / 2);
       return len % 2 == 0 && len > 1
@@ -669,7 +669,7 @@ export default {
         }
         return acc;
       }, []);
-      const arrSort = arr.sort();
+      const arrSort = arr.sort((a,b)=>a-b);
       const len = arrSort.length;
       const mid = Math.ceil(len / 2);
       return len % 2 == 0 && len > 1
@@ -739,7 +739,7 @@ export default {
           (cur.arr.length - 1));
         return acc;
       }, [])
-      const arrSort = arr.sort();
+      const arrSort = arr.sort((a,b)=>a-b);
       const len = arrSort.length;
       const mid = Math.ceil(len / 2);
       return len % 2 == 0 && len > 1
@@ -834,7 +834,7 @@ export default {
         }
         return acc;
       }, [])
-      const arrSort = arr.sort();
+      const arrSort = arr.sort((a,b)=>a-b);
       const len = arrSort.length;
       const mid = Math.ceil(len / 2);
       return len % 2 == 0 && len > 1
@@ -933,7 +933,7 @@ export default {
         }
         return acc;
       }, [])
-      const arrSort = arr.sort();
+      const arrSort = arr.sort((a,b)=>a-b);
       const len = arrSort.length;
       const mid = Math.ceil(len / 2);
       return len % 2 == 0 && len > 1
@@ -1039,7 +1039,7 @@ export default {
         }
         return acc;
       }, [])
-      const arrSort = arr.sort();
+      const arrSort = arr.sort((a,b)=>a-b);
       const len = arrSort.length;
       const mid = Math.ceil(len / 2);
       return len % 2 == 0 && len > 1
@@ -1149,7 +1149,7 @@ export default {
         }
         return acc;
       }, [])
-      const arrSort = arr.sort();
+      const arrSort = arr.sort((a,b)=>a-b);
       const len = arrSort.length;
       const mid = Math.ceil(len / 2);
       return len % 2 == 0 && len > 1
@@ -1264,7 +1264,7 @@ export default {
         }
         return acc;
       }, [])
-      const arrSort = arr.sort();
+      const arrSort = arr.sort((a,b)=>a-b);
       const len = arrSort.length;
       const mid = Math.ceil(len / 2);
       return len % 2 == 0 && len > 1
