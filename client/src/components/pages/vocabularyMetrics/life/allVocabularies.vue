@@ -124,12 +124,12 @@ export default {
   top: 40px;
   right: 12px;
   z-index: 1;
-  width: 375px;
+  width: 400px;
   &__container {
     position: relative;
   }
   &__left {
-    right: 416px;
+    right: 440px;
     &--r {
       right: 48px;
     }
