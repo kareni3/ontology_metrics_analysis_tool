@@ -78,14 +78,19 @@ export default {
       this.$store.state.vocabularies.forEach(vocabulary => {
         Object.entries(vocabulary).forEach(metric => {
           if (!VOCABULARY_SPECIAL_COLUMNS.includes(metric[0])) {
-            if (!this.enabledVocabularyNames.includes(vocabulary.name)) return
+            if (!this.enabledVocabularyNames.includes(vocabulary.name)) return;
             let index = this.metricList[metric[0]].X.indexOf(vocabulary.name);
             if (index === -1) {
               this.metricList[metric[0]].X.push(vocabulary.name);
               this.metricList[metric[0]].Y.push(metric[1]);
-              versions[vocabulary.name] = +vocabulary.version;
-            } else if (+vocabulary.version > versions[vocabulary.name]) {
-              versions[vocabulary.name] = +vocabulary.version;
+              versions[metric[0]] = {}
+              versions[metric[0]][vocabulary.name] = +vocabulary.version;
+            } else if (+vocabulary.version > versions[metric[0]][vocabulary.name]) {
+              if (vocabulary.name === "biotop") {
+                console.log(+vocabulary.version);
+                console.log(versions[metric[0]][vocabulary.name]);
+              }
+              versions[metric[0]][vocabulary.name] = +vocabulary.version;
               this.metricList[metric[0]].Y[index] = metric[1];
             }
           }
