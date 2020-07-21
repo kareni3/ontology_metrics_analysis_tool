@@ -126,18 +126,6 @@ export default {
     margin-bottom: 8px;
   }
 }
-.item {
-  &__trend {
-    display: inline-block;
-    line-height: 0;
-    &--go_up {
-      color: #22aa22d0;
-    }
-    &--go_down {
-      color: #aa2222d0;
-    }
-  }
-}
 .pl-4 {
   padding-left: 4px;
 }

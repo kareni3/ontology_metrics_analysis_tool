@@ -37,7 +37,7 @@
       Pearson correlation coefficient:
       <strong v-if="r">{{r.toFixed(3)}}</strong>
       <span class="pointer btn" @click="openDialog">Open List of all coefficients</span>
-    </div>
+    </div> 
     <div>
       <ScatterPoints v-if="Object.values(vocabularyList).length" :data="vocabularyList" />
     </div>

@@ -1,6 +1,16 @@
 <template>
   <div>
-    <span class="title-1">{{name}}</span>
+    <div class="title-2 mb-12">{{name}}</div>
+    <div class="title-1" v-if="a">
+      Metric
+      <strong class="item__trend item__trend--go_up" v-if="a > 0">⇗</strong>
+      <strong class="item__trend item__trend--go_down" v-else-if="a < 0">⇘</strong>
+      by
+      <strong>{{Math.abs(a.toFixed(4))}}</strong> per year. Pearson r:
+      <strong
+        :style="'color:rgb('+(180-Math.ceil(Math.abs(r)*255))+','+(Math.ceil(Math.abs(r)*255*0.6))+',0)'"
+      >{{r.toFixed(2)}}</strong>
+    </div>
     <Linee
       v-if="datacollection"
       :watchChartData="false"
@@ -76,6 +86,12 @@ export default {
     },
     isLife: {
       default: false
+    },
+    a: {
+      default: null
+    },
+    r: {
+      default: null
     }
   },
   mounted() {
@@ -151,3 +167,9 @@ export default {
   }
 };
 </script>
+
+<style scoped lang="scss">
+.item__trend {
+  font-size: 2rem;
+}
+</style>
