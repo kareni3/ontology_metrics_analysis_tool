@@ -117,8 +117,6 @@ export default {
         sumxy += (points[i].x/31536000000) * points[i].y;
       }
       const a = (n*sumxy - (sumx*sumy)) / (n*sumx2 - sumx*sumx);
-      console.log(n*sumxy - (sumx*sumy))
-      console.log(n*sumx2 - sumx*sumx)
       return a
     },
     prepareData() {

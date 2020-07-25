@@ -86,10 +86,6 @@ export default {
               versions[metric[0]] = {}
               versions[metric[0]][vocabulary.name] = +vocabulary.version;
             } else if (+vocabulary.version > versions[metric[0]][vocabulary.name]) {
-              if (vocabulary.name === "biotop") {
-                console.log(+vocabulary.version);
-                console.log(versions[metric[0]][vocabulary.name]);
-              }
               versions[metric[0]][vocabulary.name] = +vocabulary.version;
               this.metricList[metric[0]].Y[index] = metric[1];
             }
