@@ -6,6 +6,7 @@
       v-if="includeAverageNumbers && $store.state.averageMetrics"
       :metrics="chartMetrics"
       :disabledMetrics="disabledAverages"
+      :sigmaMult="sigmaMult"
       name="Average of All Vocabularies"
       @changeDisabled="onChangeDisabled"
       @isClosed="onIsRightClosed"
@@ -16,6 +17,7 @@
       v-if="includeAverageNumbers && $store.state.averageMetrics"
       :metrics="chartMetricsMedians"
       :disabledMetrics="disabledMedians"
+      :sigmaMult="sigmaMult"
       name="Medians of All Vocabularies"
       @changeDisabled="onChangeDisabledMedians"
     />

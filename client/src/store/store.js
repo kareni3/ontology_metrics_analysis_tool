@@ -15,6 +15,7 @@ const store = new Vuex.Store({
     maxVersion: 100,
     dialog: false,
     betweenVersionsTime: "0000-00-00",
+    sigmaMult: 2,
     incomingLinks: {
       min: 0,
       max: 1000,
@@ -89,6 +90,9 @@ const store = new Vuex.Store({
     fetchLineWidth(state, width) {
       state.lineWidth = width;
     },
+    fetchSigmaMult(state, sigmaMult) {
+      state.sigmaMult = sigmaMult;
+    },
   },
   actions: {
     fetchTransparency({ commit }, transparency) {
@@ -108,6 +112,9 @@ const store = new Vuex.Store({
     },
     fetchDialog({ commit }, dialog) {
       commit('fetchDialog', dialog);
+    },
+    fetchSigmaMult({ commit }, sigmaMult) {
+      commit('fetchSigmaMult', sigmaMult);
     },
     async fetchClasses({ commit }, data) {
       const res = await mainApi.getClasses(data.minVersion, data.maxVersion, data.incomingLinks, data.outgoingLinks, data.yearsOfLife, data.betweenVersionsTime);

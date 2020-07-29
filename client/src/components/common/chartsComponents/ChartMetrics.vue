@@ -29,7 +29,7 @@
           >
             σ = {{ +metric.standardDeviation.toFixed(2) === 0 ? metric.standardDeviation.toFixed(4) : +metric.standardDeviation.toFixed(1) === 0 ? metric.standardDeviation.toFixed(3) : metric.standardDeviation.toFixed(2) }}
             <div @mouseleave="closeOutOfSigmaDialog(metric.name)" v-if="sigmaDialog[metric.name]" class="out_of_sigma">
-              <strong>Out of 2σ:</strong>
+              <strong>Out of {{sigmaMult || 2}}σ:</strong>
               <div v-for="el in metric.outOf2Sigma" :key="el.symbol">
                 {{el.name}}: {{+el.index.toFixed(2) === 0 ? el.index.toFixed(4) : +el.index.toFixed(1) === 0 ? el.index.toFixed(3) : el.index.toFixed(2)}}
               </div>
@@ -61,7 +61,8 @@ export default {
       default: () => []
     },
     name: {},
-    disabledMetrics: {}
+    disabledMetrics: {},
+    sigmaMult: {},
   },
   watch: {
     disabledMetrics(v) {

@@ -11,7 +11,7 @@
         :key="checkboxName"
       >
         <input class="checkbox" type="checkbox" v-model="isEnabledList[i]" />
-        {{checkboxName}}
+        {{checkboxName}} 
       </div>
     </div>
   </div>

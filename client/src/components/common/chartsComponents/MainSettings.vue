@@ -23,6 +23,11 @@
           <input type="checkbox" v-model="checkboxChartMetrics" /> Average Metrics
         </div>
         <hr class="mb-12" />
+        <div class="main_settings__checkboxes mb-12">
+          <span class="mr-12">Sigma coefficient |</span>
+          <input class="mr-12" type="number" v-model="sigmaMult" />
+        </div>
+        <hr class="mb-12" />
         <div class="mb-12">
           <span class="mr-12">Versions Number |</span>
           <span class="mr-12">Min</span>
@@ -131,12 +136,13 @@ import "vue-slider-component/theme/antd.css";
 export default {
   name: "MainSettings",
   components: {
-    VueSlider
+    VueSlider,
   },
   data() {
     return {
       minVersion: 1,
       maxVersion: 1000,
+      sigmaMult: 2,
       betweenVersionsTime: "0000-00-00",
       sliderBackground: 0,
       sliderLine: 0,
@@ -147,20 +153,24 @@ export default {
       copied: false,
       incomingLinks: {
         min: 0,
-        max: 1000
+        max: 1000,
       },
       outgoingLinks: {
         min: 0,
-        max: 1000
+        max: 1000,
       },
       yearsOfLife: {
         min: "1970-01-01",
-        max: "2030-01-01"
-      }
+        max: "2030-01-01",
+      },
     };
   },
   props: ["currentPageID"],
   watch: {
+    sigmaMult(v) {
+      this.$store.dispatch("fetchSigmaMult", v);
+      if (v !== undefined) localStorage.setItem("sigmaMult", v);
+    },
     sliderLine(v) {
       clearTimeout(this.sliderLineTimer);
       this.timer = setTimeout(() => {
@@ -169,7 +179,7 @@ export default {
         const n1 = Math.ceil((this.sliderBackground * 255) / 100).toString(16);
         this.$store.dispatch("fetchTransparency", {
           line: (n.length === 1 ? "0" : "") + n,
-          background: (n1.length === 1 ? "0" : "") + n1
+          background: (n1.length === 1 ? "0" : "") + n1,
         });
       }, 500);
     },
@@ -182,7 +192,7 @@ export default {
         const n1 = Math.ceil((this.sliderLine * 255) / 100).toString(16);
         this.$store.dispatch("fetchTransparency", {
           line: (n1.length === 1 ? "0" : "") + n1,
-          background: (n.length === 1 ? "0" : "") + n
+          background: (n.length === 1 ? "0" : "") + n,
         });
       }, 500);
     },
@@ -207,11 +217,12 @@ export default {
     },
     currentPageID() {
       this.calc();
-    }
+    },
   },
   mounted() {
     this.minVersion = this.$store.state.minVersion;
     this.maxVersion = this.$store.state.maxVersion;
+    this.sigmaMult = this.$store.state.sigmaMult;
     this.betweenVersionsTime = this.$store.state.betweenVersionsTime;
     this.incomingLinks = this.$store.state.incomingLinks;
     this.outgoingLinks = this.$store.state.outgoingLinks;
@@ -230,15 +241,15 @@ export default {
       }, 1500);
 
       const localStor = {};
-      Object.entries(localStorage).forEach(item => {
+      Object.entries(localStorage).forEach((item) => {
         localStor[item[0]] = item[1];
       });
 
       this.$clipboard(JSON.stringify(localStor, null, 2));
     },
     pasteFromClipboard() {
-      navigator.clipboard.readText().then(data => {
-        Object.entries(JSON.parse(data)).forEach(item => {
+      navigator.clipboard.readText().then((data) => {
+        Object.entries(JSON.parse(data)).forEach((item) => {
           localStorage.setItem(item[0], item[1]);
         });
         document.location.reload(true);
@@ -261,21 +272,24 @@ export default {
           localStorage.getItem(this.currentPageID + "checkboxChartMetrics")
         );
       this.sliderLine =
-        typeof JSON.parse(localStorage.getItem(this.currentPageID + "sliderLine")) === 'number'
-        ? JSON.parse(localStorage.getItem(this.currentPageID + "sliderLine"))
-        : Math.ceil(
-          (parseInt(this.$store.state.transparency.line, 16) * 100) / 255
-        );
+        typeof JSON.parse(
+          localStorage.getItem(this.currentPageID + "sliderLine")
+        ) === "number"
+          ? JSON.parse(localStorage.getItem(this.currentPageID + "sliderLine"))
+          : Math.ceil(
+              (parseInt(this.$store.state.transparency.line, 16) * 100) / 255
+            );
       this.sliderBackground =
         typeof JSON.parse(
           localStorage.getItem(this.currentPageID + "sliderBackground")
-        ) === 'number'
-        ? JSON.parse(
-          localStorage.getItem(this.currentPageID + "sliderBackground")
-        )
-        : Math.ceil(
-          (parseInt(this.$store.state.transparency.background, 16) * 100) / 255
-        );
+        ) === "number"
+          ? JSON.parse(
+              localStorage.getItem(this.currentPageID + "sliderBackground")
+            )
+          : Math.ceil(
+              (parseInt(this.$store.state.transparency.background, 16) * 100) /
+                255
+            );
     },
     confirmVersionNumber() {
       if (this.minVersion === "" || this.minVersion < 1) {
@@ -317,7 +331,7 @@ export default {
         this.incomingLinks,
         this.outgoingLinks,
         this.yearsOfLife,
-        this.betweenVersionsTime,
+        this.betweenVersionsTime
       );
       this.$emit(
         "fetchVocabularies",
@@ -326,10 +340,10 @@ export default {
         this.incomingLinks,
         this.outgoingLinks,
         this.yearsOfLife,
-        this.betweenVersionsTime,
+        this.betweenVersionsTime
       );
-    }
-  }
+    },
+  },
 };
 </script>
 

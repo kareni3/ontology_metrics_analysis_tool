@@ -15,6 +15,16 @@ export default {
       standardDeviationRelativeWeightedChange: 0,
       standardDeviationRelativeChangePerVersion: 0,
       standardDeviationRelativeWeightedChangePerVersion: 0,
+      sigmaMult: 2,
+    }
+  },
+  mounted() {
+    this.sigmaMult = this.$store.state.sigmaMult
+  },
+  watch: {
+    '$store.state.sigmaMult'(v) {
+      this.sigmaMult = v;
+      console.log(v)
     }
   },
   computed: {
@@ -224,7 +234,7 @@ export default {
     outOf2SigmaAvgMean() {
       const res = Object.entries(this.data).reduce((acc, cur) => {
         const add = (cur[1].borders.max + cur[1].borders.min) / 2
-        if (add < this.avgMean - this.standardDeviationMean * 2 || add > this.avgMean + this.standardDeviationMean * 2) {
+        if (add < this.avgMean - this.standardDeviationMean* this.sigmaMult || add > this.avgMean + this.standardDeviationMean* this.sigmaMult) {
           acc.push({
             name: cur[0],
             index: add,
@@ -250,7 +260,7 @@ export default {
     outOf2SigmaMedMean() {
       const res = Object.entries(this.data).reduce((acc, cur) => {
         const add = (cur[1].borders.max + cur[1].borders.min) / 2
-        if (add < this.medMean - this.standardDeviationMean * 2 || add > this.medMean + this.standardDeviationMean * 2) {
+        if (add < this.medMean - this.standardDeviationMean* this.sigmaMult || add > this.medMean + this.standardDeviationMean* this.sigmaMult) {
           acc.push({
             name: cur[0],
             index: add,
@@ -298,7 +308,7 @@ export default {
         );
         if (val[1]) {
           const add = val[0] / val[1]
-          if (add < this.avgWeightedMean - this.standardDeviationWeightedMean * 2 || add > this.avgWeightedMean + this.standardDeviationWeightedMean * 2) {
+          if (add < this.avgWeightedMean - this.standardDeviationWeightedMean* this.sigmaMult || add > this.avgWeightedMean + this.standardDeviationWeightedMean* this.sigmaMult) {
             acc.push({
               name: cur[0],
               index: add,
@@ -344,7 +354,7 @@ export default {
         );
         if (val[1]) {
           const add = val[0] / val[1]
-          if (add < this.medWeightedMean - this.standardDeviationWeightedMean * 2 || add > this.medWeightedMean + this.standardDeviationWeightedMean * 2) {
+          if (add < this.medWeightedMean - this.standardDeviationWeightedMean* this.sigmaMult || add > this.medWeightedMean + this.standardDeviationWeightedMean* this.sigmaMult) {
             acc.push({
               name: cur[0],
               index: add,
@@ -386,7 +396,7 @@ export default {
         const add = len % 2 == 0 && len > 1
           ? (+arrSort[mid] + +arrSort[mid - 1]) / 2
           : +arrSort[mid - 1];
-        if (add < this.avgMedian - this.standardDeviationMedian * 2 || add > this.avgMedian + this.standardDeviationMedian * 2) {
+        if (add < this.avgMedian - this.standardDeviationMedian* this.sigmaMult || add > this.avgMedian + this.standardDeviationMedian* this.sigmaMult) {
           acc.push({
             name: cur[0],
             index: add,
@@ -426,7 +436,7 @@ export default {
         const add = len % 2 == 0 && len > 1
           ? (+arrSort[mid] + +arrSort[mid - 1]) / 2
           : +arrSort[mid - 1];
-        if (add < this.medMedian - this.standardDeviationMedian * 2 || add > this.medMedian + this.standardDeviationMedian * 2) {
+        if (add < this.medMedian - this.standardDeviationMedian* this.sigmaMult || add > this.medMedian + this.standardDeviationMedian* this.sigmaMult) {
           acc.push({
             name: cur[0],
             index: add,
@@ -455,7 +465,7 @@ export default {
     outOf2SigmaAvgMaxValue() {
       const res = Object.entries(this.data).reduce((acc, cur) => {
         const add = cur[1].borders.max
-        if (add < this.avgMaxValue - this.standardDeviationMaxValue * 2 || add > this.avgMaxValue + this.standardDeviationMaxValue * 2) {
+        if (add < this.avgMaxValue - this.standardDeviationMaxValue* this.sigmaMult || add > this.avgMaxValue + this.standardDeviationMaxValue* this.sigmaMult) {
           acc.push({
             name: cur[0],
             index: add,
@@ -481,7 +491,7 @@ export default {
     outOf2SigmaMedMaxValue() {
       const res = Object.entries(this.data).reduce((acc, cur) => {
         const add = cur[1].borders.max
-        if (add < this.medMaxValue - this.standardDeviationMaxValue * 2 || add > this.medMaxValue + this.standardDeviationMaxValue * 2) {
+        if (add < this.medMaxValue - this.standardDeviationMaxValue* this.sigmaMult || add > this.medMaxValue + this.standardDeviationMaxValue* this.sigmaMult) {
           acc.push({
             name: cur[0],
             index: add,
@@ -510,7 +520,7 @@ export default {
     outOf2SigmaAvgMinValue() {
       const res = Object.entries(this.data).reduce((acc, cur) => {
         const add = cur[1].borders.min
-        if (add < this.avgMinValue - this.standardDeviationMinValue * 2 || add > this.avgMinValue + this.standardDeviationMinValue * 2) {
+        if (add < this.avgMinValue - this.standardDeviationMinValue* this.sigmaMult || add > this.avgMinValue + this.standardDeviationMinValue* this.sigmaMult) {
           acc.push({
             name: cur[0],
             index: add,
@@ -536,7 +546,7 @@ export default {
     outOf2SigmaMedMinValue() {
       const res = Object.entries(this.data).reduce((acc, cur) => {
         const add = cur[1].borders.min
-        if (add < this.medMinValue - this.standardDeviationMinValue * 2 || add > this.medMinValue + this.standardDeviationMinValue * 2) {
+        if (add < this.medMinValue - this.standardDeviationMinValue* this.sigmaMult || add > this.medMinValue + this.standardDeviationMinValue* this.sigmaMult) {
           acc.push({
             name: cur[0],
             index: add,
@@ -565,7 +575,7 @@ export default {
     outOf2SigmaAvgAbsoluteChange() {
       const res = Object.entries(this.data).reduce((acc, cur) => {
         const add = +cur[1].arr[cur[1].arr.length - 1].y - +cur[1].arr[0].y
-        if (add < this.avgAbsoluteChange - this.standardDeviationAbsoluteChange * 2 || add > this.avgAbsoluteChange + this.standardDeviationAbsoluteChange * 2) {
+        if (add < this.avgAbsoluteChange - this.standardDeviationAbsoluteChange* this.sigmaMult || add > this.avgAbsoluteChange + this.standardDeviationAbsoluteChange* this.sigmaMult) {
           acc.push({
             name: cur[0],
             index: add,
@@ -591,7 +601,7 @@ export default {
     outOf2SigmaMedAbsoluteChange() {
       const res = Object.entries(this.data).reduce((acc, cur) => {
         const add = +cur[1].arr[cur[1].arr.length - 1].y - +cur[1].arr[0].y
-        if (add < this.medAbsoluteChange - this.standardDeviationAbsoluteChange * 2 || add > this.medAbsoluteChange + this.standardDeviationAbsoluteChange * 2) {
+        if (add < this.medAbsoluteChange - this.standardDeviationAbsoluteChange* this.sigmaMult || add > this.medAbsoluteChange + this.standardDeviationAbsoluteChange* this.sigmaMult) {
           acc.push({
             name: cur[0],
             index: add,
@@ -641,7 +651,7 @@ export default {
         );
         if (val[1]) {
           const add = val[0] / val[1]
-          if (add < this.avgAbsoluteWeightedChange - this.standardDeviationAbsoluteWeightedChange * 2 || add > this.avgAbsoluteWeightedChange + this.standardDeviationAbsoluteWeightedChange * 2) {
+          if (add < this.avgAbsoluteWeightedChange - this.standardDeviationAbsoluteWeightedChange* this.sigmaMult || add > this.avgAbsoluteWeightedChange + this.standardDeviationAbsoluteWeightedChange* this.sigmaMult) {
             acc.push({
               name: cur[0],
               index: add,
@@ -689,7 +699,7 @@ export default {
         );
         if (val[1]) {
           const add = val[0] / val[1]
-          if (add < this.medAbsoluteWeightedChange - this.standardDeviationAbsoluteWeightedChange * 2 || add > this.medAbsoluteWeightedChange + this.standardDeviationAbsoluteWeightedChange * 2) {
+          if (add < this.medAbsoluteWeightedChange - this.standardDeviationAbsoluteWeightedChange* this.sigmaMult || add > this.medAbsoluteWeightedChange + this.standardDeviationAbsoluteWeightedChange* this.sigmaMult) {
             acc.push({
               name: cur[0],
               index: add,
@@ -721,7 +731,7 @@ export default {
       const res = Object.entries(this.data).reduce((acc, cur) => {
         const add = (+cur[1].arr[cur[1].arr.length - 1].y - +cur[1].arr[0].y) /
           (cur[1].arr.length - 1)
-        if (add < this.avgAbsoluteChangePerVersion - this.standardDeviationAbsoluteChangePerVersion * 2 || add > this.avgAbsoluteChangePerVersion + this.standardDeviationAbsoluteChangePerVersion * 2) {
+        if (add < this.avgAbsoluteChangePerVersion - this.standardDeviationAbsoluteChangePerVersion* this.sigmaMult || add > this.avgAbsoluteChangePerVersion + this.standardDeviationAbsoluteChangePerVersion* this.sigmaMult) {
           acc.push({
             name: cur[0],
             index: add,
@@ -750,7 +760,7 @@ export default {
       const res = Object.entries(this.data).reduce((acc, cur) => {
         const add = (+cur[1].arr[cur[1].arr.length - 1].y - +cur[1].arr[0].y) /
           (cur[1].arr.length - 1)
-        if (add < this.medAbsoluteChangePerVersion - this.standardDeviationAbsoluteChangePerVersion * 2 || add > this.medAbsoluteChangePerVersion + this.standardDeviationAbsoluteChangePerVersion * 2) {
+        if (add < this.medAbsoluteChangePerVersion - this.standardDeviationAbsoluteChangePerVersion* this.sigmaMult || add > this.medAbsoluteChangePerVersion + this.standardDeviationAbsoluteChangePerVersion* this.sigmaMult) {
           acc.push({
             name: cur[0],
             index: add,
@@ -804,7 +814,7 @@ export default {
         );
         if (val[1]) {
           const add = val[0] / val[1]
-          if (add < this.avgAbsoluteWeightedChangePerVersion - this.standardDeviationAbsoluteWeightedChangePerVersion * 2 || add > this.avgAbsoluteWeightedChangePerVersion + this.standardDeviationAbsoluteWeightedChangePerVersion * 2) {
+          if (add < this.avgAbsoluteWeightedChangePerVersion - this.standardDeviationAbsoluteWeightedChangePerVersion* this.sigmaMult || add > this.avgAbsoluteWeightedChangePerVersion + this.standardDeviationAbsoluteWeightedChangePerVersion* this.sigmaMult) {
             acc.push({
               name: cur[0],
               index: add,
@@ -856,7 +866,7 @@ export default {
         );
         if (val[1]) {
           const add = val[0] / val[1]
-          if (add < this.medAbsoluteWeightedChangePerVersion - this.standardDeviationAbsoluteWeightedChangePerVersion * 2 || add > this.medAbsoluteWeightedChangePerVersion + this.standardDeviationAbsoluteWeightedChangePerVersion * 2) {
+          if (add < this.medAbsoluteWeightedChangePerVersion - this.standardDeviationAbsoluteWeightedChangePerVersion* this.sigmaMult || add > this.medAbsoluteWeightedChangePerVersion + this.standardDeviationAbsoluteWeightedChangePerVersion* this.sigmaMult) {
             acc.push({
               name: cur[0],
               index: add,
@@ -906,7 +916,7 @@ export default {
           }
         }
         const add = ((+cur[1].arr[cur[1].arr.length - 1].y - n) / Math.abs(n)) * 100
-        if (add < this.avgRelativeChange - this.standardDeviationRelativeChange * 2 || add > this.avgRelativeChange + this.standardDeviationRelativeChange * 2) {
+        if (add < this.avgRelativeChange - this.standardDeviationRelativeChange* this.sigmaMult || add > this.avgRelativeChange + this.standardDeviationRelativeChange* this.sigmaMult) {
           acc.push({
             name: cur[0],
             index: add,
@@ -952,7 +962,7 @@ export default {
           }
         }
         const add = ((+cur[1].arr[cur[1].arr.length - 1].y - n) / Math.abs(n)) * 100
-        if (add < this.medRelativeChange - this.standardDeviationRelativeChange * 2 || add > this.medRelativeChange + this.standardDeviationRelativeChange * 2) {
+        if (add < this.medRelativeChange - this.standardDeviationRelativeChange* this.sigmaMult || add > this.medRelativeChange + this.standardDeviationRelativeChange* this.sigmaMult) {
           acc.push({
             name: cur[0],
             index: add,
@@ -1008,7 +1018,7 @@ export default {
         );
         if (val[1]) {
           const add = val[0] / val[1]
-          if (add < this.avgRelativeWeightedChange - this.standardDeviationRelativeWeightedChange * 2 || add > this.avgRelativeWeightedChange + this.standardDeviationRelativeWeightedChange * 2) {
+          if (add < this.avgRelativeWeightedChange - this.standardDeviationRelativeWeightedChange* this.sigmaMult || add > this.avgRelativeWeightedChange + this.standardDeviationRelativeWeightedChange* this.sigmaMult) {
             acc.push({
               name: cur[0],
               index: add,
@@ -1062,7 +1072,7 @@ export default {
         );
         if (val[1]) {
           const add = val[0] / val[1]
-          if (add < this.medRelativeWeightedChange - this.standardDeviationRelativeWeightedChange * 2 || add > this.medRelativeWeightedChange + this.standardDeviationRelativeWeightedChange * 2) {
+          if (add < this.medRelativeWeightedChange - this.standardDeviationRelativeWeightedChange* this.sigmaMult || add > this.medRelativeWeightedChange + this.standardDeviationRelativeWeightedChange* this.sigmaMult) {
             acc.push({
               name: cur[0],
               index: add,
@@ -1118,7 +1128,7 @@ export default {
           Math.abs(n) /
           (cur[1].arr.length - 1)) *
           100;
-        if (add < this.avgRelativeChangePerVersion - this.standardDeviationRelativeChangePerVersion * 2 || add > this.avgRelativeChangePerVersion + this.standardDeviationRelativeChangePerVersion * 2) {
+        if (add < this.avgRelativeChangePerVersion - this.standardDeviationRelativeChangePerVersion* this.sigmaMult || add > this.avgRelativeChangePerVersion + this.standardDeviationRelativeChangePerVersion* this.sigmaMult) {
           acc.push({
             name: cur[0],
             index: add,
@@ -1171,7 +1181,7 @@ export default {
           Math.abs(n) /
           (cur[1].arr.length - 1)) *
           100;
-        if (add < this.medRelativeChangePerVersion - this.standardDeviationRelativeChangePerVersion * 2 || add > this.medRelativeChangePerVersion + this.standardDeviationRelativeChangePerVersion * 2) {
+        if (add < this.medRelativeChangePerVersion - this.standardDeviationRelativeChangePerVersion* this.sigmaMult || add > this.medRelativeChangePerVersion + this.standardDeviationRelativeChangePerVersion* this.sigmaMult) {
           acc.push({
             name: cur[0],
             index: add,
@@ -1231,7 +1241,7 @@ export default {
         );
         if (val[1]) {
           const add = val[0] / val[1]
-          if (add < this.avgRelativeWeightedChangePerVersion - this.standardDeviationRelativeWeightedChangePerVersion * 2 || add > this.avgRelativeWeightedChangePerVersion + this.standardDeviationRelativeWeightedChangePerVersion * 2) {
+          if (add < this.avgRelativeWeightedChangePerVersion - this.standardDeviationRelativeWeightedChangePerVersion* this.sigmaMult || add > this.avgRelativeWeightedChangePerVersion + this.standardDeviationRelativeWeightedChangePerVersion* this.sigmaMult) {
             acc.push({
               name: cur[0],
               index: add,
@@ -1289,7 +1299,7 @@ export default {
         );
         if (val[1]) {
           const add = val[0] / val[1]
-          if (add < this.medRelativeWeightedChangePerVersion - this.standardDeviationRelativeWeightedChangePerVersion * 2 || add > this.medRelativeWeightedChangePerVersion + this.standardDeviationRelativeWeightedChangePerVersion * 2) {
+          if (add < this.medRelativeWeightedChangePerVersion - this.standardDeviationRelativeWeightedChangePerVersion* this.sigmaMult || add > this.medRelativeWeightedChangePerVersion + this.standardDeviationRelativeWeightedChangePerVersion* this.sigmaMult) {
             acc.push({
               name: cur[0],
               index: add,

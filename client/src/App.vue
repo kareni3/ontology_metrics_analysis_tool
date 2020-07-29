@@ -112,6 +112,8 @@ export default {
       JSON.parse(localStorage.getItem("minVersion")) || undefined;
     const maxVersion =
       JSON.parse(localStorage.getItem("maxVersion")) || undefined;
+    const sigmaMult =
+      JSON.parse(localStorage.getItem("sigmaMult")) || 2;
     const betweenVersionsTime =
       localStorage.getItem("betweenVersionsTime") || undefined;
     const incomingLinks =
@@ -120,6 +122,7 @@ export default {
       JSON.parse(localStorage.getItem("outgoingLinks")) || undefined;
     const yearsOfLife =
       JSON.parse(localStorage.getItem("yearsOfLife")) || undefined;
+    this.$store.dispatch("fetchSigmaMult", sigmaMult);
     await this.fetchClasses(
       minVersion,
       maxVersion,
