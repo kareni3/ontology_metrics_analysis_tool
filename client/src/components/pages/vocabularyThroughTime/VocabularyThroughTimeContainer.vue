@@ -23,7 +23,7 @@
           <div>
             <span class="pointer title-1 unselect green" @click="playAnimation">PLAY</span>
           </div>
-          <ScatterPoints :isLife="true" :data="data[1]" :name="data[0]" />
+          <ScatterPoints :isLife="true" :scaleLabels="{x: 'time period from first version', y: data[0]}" :data="data[1]" :name="data[0]" />
         </div>
       </div>
     </div>

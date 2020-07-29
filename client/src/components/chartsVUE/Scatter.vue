@@ -20,13 +20,13 @@ export default {
   },
   mixins: [colors],
   components: {
-    Linee
+    Linee,
   },
   computed: {
     myStyles() {
       return {
         height: `480px`,
-        position: "relative"
+        position: "relative",
       };
     },
   },
@@ -60,14 +60,22 @@ export default {
     },
     derivativeFunction() {
       this.setDataset();
-    }
+    },
   },
   props: {
     data: {},
     name: {},
+    scaleLabels: {
+      default: () => {
+        return {
+          x: "x-axes",
+          y: "y-axes",
+        };
+      },
+    },
     isDate: {
-      default: false
-    }
+      default: false,
+    },
   },
   mounted() {
     this.updateOptions();
@@ -78,27 +86,41 @@ export default {
       this.options = {
         maintainAspectRatio: false,
         legend: {
-          display: this.$store.state.legend
+          display: this.$store.state.legend,
         },
         scales: {
-          xAxes: [
+          yAxes: [
             {
-              type: "linear",
-              position: "bottom",
-              ticks: this.isDate 
-              ? {
-                userCallback: function(label) {
-                  return moment(label).format("DD.MM.YYYY");
-                }
-              }
-              : {
-                userCallback: function(label) {
-                  return label;
-                }
+              scaleLabel: {
+                display: true,
+                labelString: this.scaleLabels.y,
+                fontSize: 18,
               },
             }
-          ]
-        }
+          ],
+          xAxes: [
+            {
+              scaleLabel: {
+                display: true,
+                labelString: this.scaleLabels.x,
+                fontSize: 18,
+              },
+              type: "linear",
+              position: "bottom",
+              ticks: this.isDate
+                ? {
+                    userCallback: function (label) {
+                      return moment(label).format("DD.MM.YYYY");
+                    },
+                  }
+                : {
+                    userCallback: function (label) {
+                      return label;
+                    },
+                  },
+            },
+          ],
+        },
       };
     },
     setDataset() {
@@ -123,20 +145,20 @@ export default {
           data: [
             {
               x: 0,
-              y: 0
+              y: 0,
             },
             {
               x: 1,
-              y: 0
-            }
+              y: 0,
+            },
           ],
-          borderColor: "#000000a0"
+          borderColor: "#000000a0",
         });
       }
       this.datacollection = {
-        datasets: datasets
+        datasets: datasets,
       };
-    }
-  }
+    },
+  },
 };
 </script>

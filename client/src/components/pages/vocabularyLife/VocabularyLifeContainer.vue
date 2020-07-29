@@ -21,6 +21,7 @@
           v-if="ind < $store.state.graphCount"
           :data="data[1]"
           :name="data[0]"
+          :scaleLabels="{x: 'date', y: data[0]}"
           :isDate="true"
           :a="A[ind]"
           :r="R[ind]"

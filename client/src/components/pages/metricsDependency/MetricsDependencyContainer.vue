@@ -39,7 +39,10 @@
       <span class="pointer btn" @click="openDialog">Open List of all coefficients</span>
     </div> 
     <div>
-      <ScatterPoints v-if="Object.values(vocabularyList).length" :data="vocabularyList" />
+      <ScatterPoints 
+          v-if="Object.values(vocabularyList).length"
+          :scaleLabels="{x: selectedMetricX, y: selectedMetricY}" 
+          :data="vocabularyList" />
     </div>
     <div v-show="dialog" class="dialog">
       <div>

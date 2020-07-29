@@ -21,6 +21,7 @@
           v-if="index < $store.state.graphCount"
           :includeAverageNumbers="true"
           :derivativeFunction="checkboxderivativeFunction"
+          :scaleLabels="{x: 'date', y: data[0]}"
           :data="data[1]"
           :name="data[0]"
         ></Chart>

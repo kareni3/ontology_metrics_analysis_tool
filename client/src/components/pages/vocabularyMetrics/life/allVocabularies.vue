@@ -21,7 +21,7 @@
       name="Medians of All Vocabularies"
       @changeDisabled="onChangeDisabledMedians"
     />
-    <Scatter :data="preparedData" :name="name" />
+    <Scatter :data="preparedData" :scaleLabels="{x: 'vocabulary life', y: name}" :name="name" />
   </div>
 </template>
 

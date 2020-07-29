@@ -14,6 +14,7 @@
     <ChartList
       :maxMetricValue="maxMetricValue"
       :name="Object.keys(versions)[versionID]"
+      :xLabel="'Classes'"
       :dataList="preparedDataList"
     />
   </div>

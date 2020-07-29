@@ -24,7 +24,6 @@ export default {
   watch: {
     '$store.state.sigmaMult'(v) {
       this.sigmaMult = v;
-      console.log(v)
     }
   },
   computed: {

@@ -55,6 +55,14 @@ export default {
         };
       }
     },
+    scaleLabels: {
+      default: () => {
+        return {
+          x: "x-axes",
+          y: "y-axes",
+        };
+      },
+    },
     name: {
       default: "metric"
     },
@@ -162,6 +170,11 @@ export default {
         scales: {
           xAxes: [
             {
+              scaleLabel: {
+                display: true,
+                labelString: this.scaleLabels.x,
+                fontSize: 18,
+              },
               gridLines: {
                 display: true
               }
@@ -169,6 +182,11 @@ export default {
           ],
           yAxes: [
             {
+              scaleLabel: {
+                display: true,
+                labelString: this.scaleLabels.y,
+                fontSize: 18,
+              },
               gridLines: {
                 display: true
               },

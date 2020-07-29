@@ -3,7 +3,7 @@
     <div class="title-2">{{name}}</div>
     <div v-if="dataList">
       <div v-for="(data,index) in preparedDataList" :key="name+index">
-        <NameChart v-if="index < $store.state.graphCount" :maxMetricValue="maxMetricValue" :data="data[1]" :name="data[0]" />
+        <NameChart v-if="index < $store.state.graphCount" :scaleLabels="{x: xLabel, y: data[0]}" :maxMetricValue="maxMetricValue" :data="data[1]" :name="data[0]" />
       </div>
     </div>
   </div>
@@ -21,7 +21,7 @@ export default {
     return {
     };
   },
-  props: ['name','dataList', 'maxMetricValue'],
+  props: ['name','dataList', 'maxMetricValue', 'xLabel'],
   computed: {
     preparedDataList() {
       return this.dataList

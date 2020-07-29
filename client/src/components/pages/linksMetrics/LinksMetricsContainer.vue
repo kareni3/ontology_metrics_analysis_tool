@@ -23,6 +23,7 @@
           v-if="ind < $store.state.graphCount"
           :radar="data[1]"
           :name="data[0]"
+          :scaleLabels="{x: 'links', y: data[0]}"
         />
       </div>
     </div>

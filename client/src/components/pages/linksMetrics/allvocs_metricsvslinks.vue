@@ -27,27 +27,41 @@ export default {
       options: {
         maintainAspectRatio: false,
         legend: {
-          display: this.$store.state.legend
+          display: this.$store.state.legend,
         },
         scales: {
+          yAxes: [
+            {
+              scaleLabel: {
+                display: true,
+                labelString: this.scaleLabels.y,
+                fontSize: 18,
+              },
+            },
+          ],
           xAxes: [
             {
+              scaleLabel: {
+                display: true,
+                labelString: this.scaleLabels.y,
+                fontSize: 18,
+              },
               type: "linear",
-              position: "bottom"
-            }
-          ]
-        }
-      }
+              position: "bottom",
+            },
+          ],
+        },
+      },
     };
   },
   components: {
-    Linee
+    Linee,
   },
   computed: {
     r() {
       const avg = [0, 0];
       let n = 0;
-      this.radar.forEach(el => {
+      this.radar.forEach((el) => {
         avg[0] += Math.exp(+el.x) - 1;
         avg[1] += Math.exp(+el.y) - 1;
         n++;
@@ -58,8 +72,9 @@ export default {
       let denominator = 0;
       let denominatorX = 0;
       let denominatorY = 0;
-      this.radar.forEach(el => {
-        numerator += (Math.exp(+el.x) - 1 - avg[0]) * (Math.exp(+el.y) - 1 - avg[1]);
+      this.radar.forEach((el) => {
+        numerator +=
+          (Math.exp(+el.x) - 1 - avg[0]) * (Math.exp(+el.y) - 1 - avg[1]);
         denominatorX += (Math.exp(+el.x) - 1 - avg[0]) ** 2;
         denominatorY += (Math.exp(+el.y) - 1 - avg[1]) ** 2;
       });
@@ -69,9 +84,9 @@ export default {
     myStyles() {
       return {
         height: `600px`,
-        position: "relative"
+        position: "relative",
       };
-    }
+    },
   },
   watch: {
     radar() {
@@ -100,11 +115,19 @@ export default {
     },
     "$store.state.yearsOfLife"() {
       this.setDataset();
-    }
+    },
   },
   props: {
     radar: {},
-    name: {}
+    scaleLabels: {
+      default: () => {
+        return {
+          x: "x-axes",
+          y: "y-axes",
+        };
+      },
+    },
+    name: {},
   },
   mounted() {
     this.updateOptions();
@@ -115,32 +138,42 @@ export default {
       this.options = {
         maintainAspectRatio: false,
         legend: {
-          display: this.$store.state.legend
+          display: this.$store.state.legend,
         },
         scales: {
           xAxes: [
             {
+              scaleLabel: {
+                display: true,
+                labelString: this.scaleLabels.x,
+                fontSize: 18,
+              },
               type: "linear",
               position: "bottom",
               ticks: {
-                userCallback: function(label) {
+                userCallback: function (label) {
                   let n = Math.exp(+label) - 1;
                   return n > 10 ? n.toFixed() : n.toFixed(2);
-                }
-              }
-            }
+                },
+              },
+            },
           ],
           yAxes: [
             {
+              scaleLabel: {
+                display: true,
+                labelString: this.scaleLabels.y,
+                fontSize: 18,
+              },
               ticks: {
-                userCallback: function(label) {
+                userCallback: function (label) {
                   let n = Math.exp(+label) - 1;
                   return n > 10 ? n.toFixed() : n.toFixed(2);
-                }
-              }
-            }
-          ]
-        }
+                },
+              },
+            },
+          ],
+        },
       };
     },
     setDataset() {
@@ -151,12 +184,12 @@ export default {
             backgroundColor: "#f8797900",
             borderColor: "#f8797900",
             pointBackgroundColor: "#f84545" + "c0",
-            pointRadius: 4
-          }
-        ]
+            pointRadius: 4,
+          },
+        ],
       };
-    }
-  }
+    },
+  },
 };
 </script>
 

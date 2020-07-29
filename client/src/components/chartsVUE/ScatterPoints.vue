@@ -31,20 +31,20 @@ export default {
   data() {
     return {
       datacollection: null,
-      options: null
+      options: null,
     };
   },
   mixins: [colors],
   components: {
-    Linee
+    Linee,
   },
   computed: {
     myStyles() {
       return {
         height: `700px`,
-        position: "relative"
+        position: "relative",
       };
-    }
+    },
   },
   watch: {
     data() {
@@ -76,23 +76,31 @@ export default {
     },
     derivativeFunction() {
       this.setDataset();
-    }
+    },
   },
   props: {
     data: {},
     name: {},
     isDate: {
-      default: false
+      default: false,
     },
     isLife: {
-      default: false
+      default: false,
+    },
+    scaleLabels: {
+      default: () => {
+        return {
+          x: "x-axes",
+          y: "y-axes",
+        };
+      },
     },
     a: {
-      default: null
+      default: null,
     },
     r: {
-      default: null
-    }
+      default: null,
+    },
   },
   mounted() {
     this.updateOptions();
@@ -103,33 +111,47 @@ export default {
       this.options = {
         maintainAspectRatio: false,
         legend: {
-          display: this.$store.state.legend
+          display: this.$store.state.legend,
         },
         scales: {
+          yAxes: [
+            {
+              scaleLabel: {
+                display: true,
+                labelString: this.scaleLabels.y,
+                fontSize: 18,
+              },
+            }
+          ],
           xAxes: [
             {
+              scaleLabel: {
+                display: true,
+                labelString: this.scaleLabels.x,
+                fontSize: 18,
+              },
               type: "linear",
               position: "bottom",
               ticks: this.isDate
                 ? {
-                    userCallback: function(label) {
+                    userCallback: function (label) {
                       return moment(label).format("DD.MM.YYYY");
-                    }
+                    },
                   }
                 : this.isLife
                 ? {
-                    userCallback: function(label) {
+                    userCallback: function (label) {
                       return (label / 31536000000).toFixed(1) + " years";
-                    }
+                    },
                   }
                 : {
-                    userCallback: function(label) {
+                    userCallback: function (label) {
                       return label;
-                    }
-                  }
-            }
-          ]
-        }
+                    },
+                  },
+            },
+          ],
+        },
       };
     },
     setDataset() {
@@ -141,7 +163,7 @@ export default {
           backgroundColor: "#f8797900",
           borderColor: "#f8797900",
           pointBackgroundColor: this.colors[i % this.colors.length] + "c0",
-          pointRadius: 4
+          pointRadius: 4,
         });
       });
       if (this.derivativeFunction) {
@@ -150,21 +172,21 @@ export default {
           data: [
             {
               x: 0,
-              y: 0
+              y: 0,
             },
             {
               x: 1,
-              y: 0
-            }
+              y: 0,
+            },
           ],
-          borderColor: "#000000a0"
+          borderColor: "#000000a0",
         });
       }
       this.datacollection = {
-        datasets: datasets
+        datasets: datasets,
       };
-    }
-  }
+    },
+  },
 };
 </script>
 

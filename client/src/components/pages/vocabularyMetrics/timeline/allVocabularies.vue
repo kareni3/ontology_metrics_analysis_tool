@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Scatter :data="preparedData" :name="name" :isDate="true" />
+    <Scatter :data="preparedData" :scaleLabels="{x: 'date', y: name}" :name="name" :isDate="true" />
   </div>
 </template>
 
