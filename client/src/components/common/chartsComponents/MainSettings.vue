@@ -296,19 +296,19 @@ export default {
         this.$emit("callError", "Error of minimum number of versions value");
         return;
       }
-      if (this.minVersion > this.maxVersion) {
+      if (+this.minVersion > +this.maxVersion) {
         this.$emit("callError", "Max >= Min. Think about it");
         return;
       }
-      if (this.incomingLinks.min > this.incomingLinks.max) {
+      if (+this.incomingLinks.min > +this.incomingLinks.max) {
         this.$emit("callError", "Max >= Min. Think about it");
         return;
       }
-      if (this.outgoingLinks.min > this.outgoingLinks.max) {
+      if (+this.outgoingLinks.min > +this.outgoingLinks.max) {
         this.$emit("callError", "Max >= Min. Think about it");
         return;
       }
-      if (this.yearsOfLife.min > this.yearsOfLife.max) {
+      if (+this.yearsOfLife.min > +this.yearsOfLife.max) {
         this.$emit("callError", "Max >= Min. Think about it");
         return;
       }
