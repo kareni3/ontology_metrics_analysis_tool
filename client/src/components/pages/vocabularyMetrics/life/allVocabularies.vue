@@ -22,19 +22,23 @@
       @changeDisabled="onChangeDisabledMedians"
     />
     <Scatter :data="preparedData" :scaleLabels="{x: 'vocabulary life', y: name}" :name="name" />
+    <div
+      class="text_right"
+    >Number of Vocabularies with value equal to 0: {{zeroVocabularies[0]}} ({{zeroVocabularies[1]}}%), count of Versions: {{zeroVersions[0]}} ({{zeroVersions[1]}}%)</div>
+    <div class="text_right">Number of Vocabularies with a value that has not changed: {{unchangedVocabularies[0]}} ({{unchangedVocabularies[1]}}%)</div>
   </div>
 </template>
 
 <script>
 import ChartMetrics from "@/components/common/chartsComponents/ChartMetrics";
 import Scatter from "@/components/chartsVUE/Scatter";
-import indexes from "./mixins/indexes"
+import indexes from "./mixins/indexes";
 
 export default {
   name: "AllVocabularies",
   components: {
     ChartMetrics,
-    Scatter
+    Scatter,
   },
   mixins: [indexes],
   data() {
@@ -47,13 +51,13 @@ export default {
     data: {},
     name: {},
     includeAverageNumbers: {
-      default: true
+      default: true,
     },
     derivativeFunction: {
-      default: false
+      default: false,
     },
     disabledMedians: {},
-    disabledAverages: {}
+    disabledAverages: {},
   },
   watch: {
     data() {
@@ -61,7 +65,57 @@ export default {
     },
     derivativeFunction() {
       this.prepareData();
-    }
+    },
+  },
+  computed: {
+    zeroVocabularies() {
+      let count = 0;
+      let g_count = 0
+      Object.values(this.data).forEach((voc) => {
+        g_count++
+        let zero = true;
+        voc.arr.forEach((point) => {
+          if (+point.y !== 0) {
+            zero = false;
+          }
+        });
+        if (zero) {
+          count++;
+        }
+      });
+      return [count, (count/g_count * 100).toFixed()];
+    },
+    zeroVersions() {
+      let count = 0;
+      let g_count = 0
+      Object.values(this.data).forEach((voc) => {
+        voc.arr.forEach((point) => {
+          g_count++
+          if (+point.y === 0) {
+            count++;
+          }
+        });
+      });
+      return [count, (count/g_count * 100).toFixed()];
+    },
+    unchangedVocabularies() {
+      let count = 0;
+      let g_count = 0
+      Object.values(this.data).forEach((voc) => {
+        g_count++
+        let zero = true;
+        let firstVersionY = +voc.arr[0].y
+        voc.arr.forEach((point) => {
+          if (+point.y !== firstVersionY) {
+            zero = false;
+          }
+        });
+        if (zero) {
+          count++;
+        }
+      });
+      return [count, (count/g_count * 100).toFixed()];
+    },
   },
   mounted() {
     this.prepareData();
@@ -80,21 +134,21 @@ export default {
       this.options = {
         maintainAspectRatio: false,
         legend: {
-          display: this.$store.state.legend
+          display: this.$store.state.legend,
         },
         scales: {
           xAxes: [
             {
               type: "linear",
-              position: "bottom"
-            }
-          ]
-        }
+              position: "bottom",
+            },
+          ],
+        },
       };
     },
     prepareData() {
       this.preparedData = {};
-      Object.entries(this.data).forEach(voc => {
+      Object.entries(this.data).forEach((voc) => {
         this.preparedData[voc[0]] = voc[1].arr.map((el, ind) => {
           let elY = 0;
           if (this.derivativeFunction) {
@@ -111,12 +165,12 @@ export default {
           }
           return {
             y: elY,
-            x: el.x
+            x: el.x,
           };
         });
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -129,6 +183,7 @@ export default {
   width: 400px;
   &__container {
     position: relative;
+    margin-bottom: 42px;
   }
   &__left {
     right: 440px;
@@ -136,5 +191,10 @@ export default {
       right: 48px;
     }
   }
+}
+.text_right {
+  text-align: end;
+  padding-left: 62px;
+  color: gray;
 }
 </style>
