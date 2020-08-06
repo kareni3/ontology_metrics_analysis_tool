@@ -24,7 +24,8 @@ export default {
     metrics: {},
     name: {
       default: "metric"
-    }
+    },
+    label: {},
   },
   computed: {
     myStyles() {
@@ -70,7 +71,7 @@ export default {
     },
     datacollection() {
       return {
-        labels: ["Last versions of vocabularies"],
+        labels: [this.label],
         datasets: this.dataset
       };
     }
