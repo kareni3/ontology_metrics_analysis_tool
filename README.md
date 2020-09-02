@@ -51,18 +51,35 @@ You can add "all" instead of list of vocabularies to scip all of them
 
 #### Preparation
 - install last version of Node.js
+- install libraries:
+```sh
+cd ./server
+npm install
+```
 
 #### Run Server
 - Be sure that your db server is running
-- cd ./server
-- npm start
+- run:
+```sh
+cd ./server
+npm start
+```
+
 
 ### Client
 
 #### Preparation
 - install vue and vue-cli
+- install libraries:
+```sh
+cd ./client
+npm install
+```
 
 #### Run Client
-- Be sure that your server is running
-- cd ./client
-- npm run serve
+- be sure that your server is running
+- run:
+```sh
+cd ./client
+npm run serve
+```
