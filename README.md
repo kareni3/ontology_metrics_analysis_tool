@@ -3,7 +3,6 @@
 ## CollectVocabularies:
 
 ### Preparation:
-- clone
 - install python 3
 - install libraries:
 ```sh
@@ -13,11 +12,11 @@ pip install -r libs.txt
 - download vocabularies in rdf or owl format
 - create folder ./vocabularies in ./collectVocabularies folder 
 - put all versions of each vocabulary into ./vocabularies/{vocabulary_name} (you can find examples here https://drive.google.com/drive/folders/1PriRBtywgzUX9tGJ9QAPcaVPgRZ__Ibx?usp=sharing )
-- name vocabularies by pattern (if it is possible): yyyy-mm-dd
+- name vocabularies by pattern: yyyy-mm-dd.{rdf/n3/...}
 
 ### Run ./startApp.py
 
-After running XML and CSV files of the metrics will be created in root directory with the program.
+After running, XML and CSV files of the metrics will be created in root directory with the program.
 These files are creating from vocabularies in ./vocabularies directory.
 
 ### How to work with scipVocabularies.txt ?
@@ -33,3 +32,37 @@ You can add "all" instead of list of vocabularies to scip all of them
 
 ### How to insert vocabularies into database ?
 
+#### Restore Database
+- install Postgresql
+- db backup is in ./collectVocabularies/database/init/onto_metrics.sql. Restore this db
+- change db settings in database.config.json
+- migrations is in ./collectVocabularies/database/migrations/
+- run ./applyMigrations.py
+
+#### Add New Data
+- before adding new vocabularies into db you should be sure that all ONLY NEW vocabularies are in ./vocabularies folder (see CollectVocabularies -> Preparation in this file)
+- run ./addMigrations.py
+- run ./applyMigrations.py
+- if something wrong, run ./rollbackMigrations.py, delete last files with migrations, solve the problem, and try again
+
+## Run App:
+
+### Sever
+
+#### Preparation
+- install last version of Node.js
+
+#### Run Server
+- Be sure that your db server is running
+- cd ./server
+- npm start
+
+### Client
+
+#### Preparation
+- install vue and vue-cli
+
+#### Run Client
+- Be sure that your server is running
+- cd ./client
+- npm run serve
